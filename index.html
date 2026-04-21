@@ -31,7 +31,6 @@
     </div>
 
     <script>
-        // Твоя ссылка, которую мы создали в Cloudflare
         const WORKER_URL = "https://young-cake-650b.alexeyai2929.workers.dev"; 
 
         async function talk() {
@@ -45,27 +44,34 @@
 
             const resDiv = document.createElement('div');
             resDiv.className = 'ai';
-            resDiv.innerHTML = '<b>AI:</b> Слушаю...';
+            resDiv.innerHTML = '<b>AI:</b> Думаю...';
             msgs.appendChild(resDiv);
             msgs.scrollTop = msgs.scrollHeight;
 
             try {
+                // Отправляем чистый POST запрос на твой Cloudflare мост
                 const response = await fetch(WORKER_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ text: val })
                 });
 
+                if (!response.ok) throw new Error("Server error");
+
                 const data = await response.json();
 
+                // Разбираем ответ от Gemini через мост
                 if (data.candidates && data.candidates[0].content) {
                     const reply = data.candidates[0].content.parts[0].text;
                     resDiv.innerHTML = `<b>AI:</b> ${reply}`;
+                } else if (data.error) {
+                    resDiv.innerHTML = `<b>AI:</b> Ошибка ключа: ${data.error.message}`;
                 } else {
-                    resDiv.innerHTML = `<b>AI:</b> Брат, ИИ задумался. Нажми еще раз через 5 сек!`;
+                    resDiv.innerHTML = `<b>AI:</b> Брат, я тебя слышу, но Gemini прислал пустой ответ. Попробуй ещё раз.`;
                 }
             } catch(e) {
-                resDiv.innerHTML = '<b>AI:</b> Ошибка связи. Проверь, нажал ли ты кнопку Deploy в Cloudflare!';
+                resDiv.innerHTML = '<b>AI:</b> Ошибка связи. Убедись, что в Cloudflare статус "Active"!';
+                console.error("Fetch error:", e);
             }
             msgs.scrollTop = msgs.scrollHeight;
         }
