@@ -16,7 +16,7 @@
         .user-msg { color: #fff; text-align: right; opacity: 0.8; align-self: flex-end; background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 8px; max-width: 85%; }
         .input-box { padding: 20px; border-top: 1px solid #222; display: flex; background: #080808; border-radius: 0 0 15px 15px; }
         input { background: transparent; border: none; color: #fff; flex: 1; outline: none; font-size: 1rem; }
-        .send-btn { color: #00f2ff; cursor: pointer; font-size: 1.5rem; transition: 0.3s; }
+        .send-btn { color: #00f2ff; cursor: pointer; font-size: 1.5rem; }
         @media (max-width: 900px) { body { flex-direction: column; overflow-y: auto; } #chat-widget { margin-right: 0; width: 95%; height: 500px; margin-top: 20px; } h1 { font-size: 3rem; } }
     </style>
 </head>
@@ -26,29 +26,20 @@
         <div style="letter-spacing: 5px; opacity: 0.5; font-size: 0.7rem; margin-top:10px;">SYSTEM ONLINE | TBILISI</div>
     </div>
     <div id="chat-widget">
-        <div class="chat-header">GOOGLE AI CORE v1.2</div>
+        <div class="chat-header">GOOGLE AI CORE v1.3</div>
         <div id="messages">
-            <div class="ai-msg"><b>AI:</b> На связи, брат! Мы на Google Firebase. Жду твой месседж! 🦾</div>
+            <div class="ai-msg"><b>AI:</b> Брат, я на связи. Проверяем канал! 🦾</div>
         </div>
         <div class="input-box">
-            <input type="text" id="userInput" placeholder="Напиши что-нибудь..." autocomplete="off">
+            <input type="text" id="userInput" placeholder="Напиши мне..." autocomplete="off">
             <span class="send-btn" id="sendBtn">➔</span>
         </div>
     </div>
 
-    <script type="importmap">
-      {
-        "imports": {
-          "@google/generative-ai": "https://esm.run/@google/generative-ai"
-        }
-      }
-    </script>
     <script type="module">
-        import { GoogleGenerativeAI } from "@google/generative-ai";
-
         // Твой ключ JHc8
         const API_KEY = "AIzaSyDrP6vXlRB4xzqbbKwz8RZqiaiRI0uJHc8"; 
-        const genAI = new GoogleGenerativeAI(API_KEY);
+        const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
 
         const input = document.getElementById('userInput'), 
               msgs = document.getElementById('messages'), 
@@ -63,25 +54,30 @@
             msgs.scrollTop = msgs.scrollHeight;
 
             const loadingId = "load-" + Date.now();
-            msgs.innerHTML += `<div class="ai-msg" id="${loadingId}"><b>AI:</b> Сканирую частоты...</div>`;
+            msgs.innerHTML += `<div class="ai-msg" id="${loadingId}"><b>AI:</b> Думаю...</div>`;
             msgs.scrollTop = msgs.scrollHeight;
 
             try {
-                // Прямой вызов модели flash
-                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-                
-                const result = await model.generateContent({
-                    contents: [{ role: "user", parts: [{ text: "Ты — Lesiva, крутой музыкальный продюсер из Тбилиси. Отвечай кратко, по-братски, используй сленг и эмодзи. Вопрос: " + text }] }]
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: "Ты — Lesiva, крутой продюсер из Тбилиси. Отвечай кратко, по-братски, используй сленг и эмодзи. Вопрос: " + text }] }]
+                    })
                 });
-                
-                const response = await result.response;
-                const reply = response.text();
 
+                const data = await response.json();
                 document.getElementById(loadingId).remove();
-                msgs.innerHTML += `<div class="ai-msg"><b>AI:</b> ${reply}</div>`;
+
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    const reply = data.candidates[0].content.parts[0].text;
+                    msgs.innerHTML += `<div class="ai-msg"><b>AI:</b> ${reply}</div>`;
+                } else {
+                    throw new Error("Empty response");
+                }
             } catch (e) {
-                console.error("FULL ERROR:", e);
-                document.getElementById(loadingId).innerHTML = "<b>AI:</b> Брат, Google просит подтвердить ключ в AI Studio. Нажми там 'Get API Key' еще раз!";
+                document.getElementById(loadingId).innerHTML = "<b>AI:</b> Брат, Google капризничает. Попробуй обновить страницу или проверь API-ключ!";
+                console.error(e);
             }
             msgs.scrollTop = msgs.scrollHeight;
         }
