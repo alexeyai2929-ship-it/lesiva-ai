@@ -5,22 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LESIVA | OFFICIAL TERMINAL</title>
     <style>
-        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        #chat-container { width: 380px; height: 600px; border: 2px solid #00f2ff; background: rgba(10, 10, 10, 0.95); border-radius: 15px; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(0, 242, 255, 0.2); }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        #chat { width: 380px; height: 600px; border: 2px solid #00f2ff; background: #0a0a0a; border-radius: 15px; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(0, 242, 255, 0.2); }
         .header { background: #00f2ff; color: #000; padding: 15px; text-align: center; font-weight: bold; font-size: 0.8rem; letter-spacing: 2px; border-radius: 12px 12px 0 0; text-transform: uppercase; }
         #messages { flex: 1; padding: 20px; overflow-y: auto; font-size: 0.9rem; scrollbar-width: none; display: flex; flex-direction: column; gap: 12px; }
-        .ai-msg { color: #00f2ff; background: rgba(0, 242, 255, 0.05); padding: 10px; border-radius: 8px; align-self: flex-start; max-width: 85%; }
-        .user-msg { color: #fff; background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 8px; align-self: flex-end; max-width: 85%; opacity: 0.8; }
+        .ai { color: #00f2ff; background: rgba(0, 242, 255, 0.05); padding: 10px; border-radius: 8px; align-self: flex-start; max-width: 85%; line-height: 1.4; }
+        .user { color: #fff; background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 8px; align-self: flex-end; max-width: 85%; opacity: 0.8; }
         .input-area { padding: 20px; border-top: 1px solid #222; display: flex; background: #080808; border-radius: 0 0 15px 15px; }
         input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 1rem; }
         button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 1.5rem; }
     </style>
 </head>
 <body>
-    <div id="chat-container">
+    <div id="chat">
         <div class="header">LESIVA TERMINAL | TBILISI</div>
         <div id="messages">
-            <div class="ai-msg"><b>AI:</b> Брат, мост настроен. Жду твой сигнал! 🦾</div>
+            <div class="ai"><b>AI:</b> Брат, я на связи. Наваливай базу! 🦾</div>
         </div>
         <div class="input-area">
             <input type="text" id="userInput" placeholder="Напиши что-нибудь..." autocomplete="off">
@@ -31,20 +31,18 @@
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxD_-YClEzCaaPUDoWF1KTUXKY8dlQ43zKhqe6coSFwyS68BXpIch2woPLI4WHh8NZMTw/exec";
 
-        const input = document.getElementById('userInput'), 
-              msgs = document.getElementById('messages'), 
-              btn = document.getElementById('sendBtn');
+        const input = document.getElementById('userInput'), msgs = document.getElementById('messages'), btn = document.getElementById('sendBtn');
 
         async function talk() {
             const text = input.value.trim();
             if (!text) return;
 
-            msgs.innerHTML += `<div class="user-msg"><b>YOU:</b> ${text}</div>`;
+            msgs.innerHTML += `<div class="user"><b>YOU:</b> ${text}</div>`;
             input.value = '';
             msgs.scrollTop = msgs.scrollHeight;
 
             const loadingId = "L-" + Date.now();
-            msgs.innerHTML += `<div class="ai-msg" id="${loadingId}"><b>AI:</b> На связи...</div>`;
+            msgs.innerHTML += `<div class="ai" id="${loadingId}"><b>AI:</b> На связи...</div>`;
             msgs.scrollTop = msgs.scrollHeight;
 
             try {
@@ -56,14 +54,15 @@
                 const data = await response.json();
                 document.getElementById(loadingId).remove();
 
-                if (data.candidates && data.candidates[0].content) {
+                // Правильный разбор ответа от Gemini через Google Script
+                if (data && data.candidates && data.candidates[0].content) {
                     const reply = data.candidates[0].content.parts[0].text;
-                    msgs.innerHTML += `<div class="ai-msg"><b>AI:</b> ${reply}</div>`;
+                    msgs.innerHTML += `<div class="ai"><b>AI:</b> ${reply}</div>`;
                 } else {
-                    msgs.innerHTML += `<div class="ai-msg"><b>AI:</b> Брат, ответ пришел, но он пустой. Попробуй еще раз.</div>`;
+                    msgs.innerHTML += `<div class="ai"><b>AI:</b> Брат, сигнал дошел, но ответ пустой. Нажми еще раз через 5 сек!</div>`;
                 }
             } catch (e) {
-                document.getElementById(loadingId).innerHTML = "<b>AI:</b> Ошибка моста. Проверь, опубликовал ли ты новую версию скрипта!";
+                document.getElementById(loadingId).innerHTML = "<b>AI:</b> Ошибка моста. Проверь 'Новую версию' скрипта!";
             }
             msgs.scrollTop = msgs.scrollHeight;
         }
