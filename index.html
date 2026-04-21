@@ -5,35 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LESIVA | OFFICIAL AI</title>
     <style>
-        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
-        #chat { width: 380px; height: 600px; border: 2px solid #00f2ff; background: #0a0a0a; border-radius: 15px; display: flex; flex-direction: column; box-shadow: 0 0 40px rgba(0, 242, 255, 0.2); }
-        .header { background: #00f2ff; color: #000; padding: 15px; text-align: center; font-weight: bold; border-radius: 12px 12px 0 0; text-transform: uppercase; letter-spacing: 2px; }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', Roboto, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        #chat { width: 380px; height: 600px; border: 2px solid #00f2ff; background: #0a0a0a; border-radius: 15px; display: flex; flex-direction: column; box-shadow: 0 0 50px rgba(0, 242, 255, 0.15); }
+        .header { background: #00f2ff; color: #000; padding: 15px; text-align: center; font-weight: bold; border-radius: 12px 12px 0 0; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; }
         #msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; scrollbar-width: none; }
-        .ai { color: #00f2ff; background: rgba(0, 242, 255, 0.05); padding: 12px; border-radius: 10px; align-self: flex-start; max-width: 85%; line-height: 1.4; border-left: 3px solid #00f2ff; }
-        .user { color: #fff; background: rgba(255, 255, 255, 0.05); padding: 12px; border-radius: 10px; align-self: flex-end; max-width: 85%; opacity: 0.8; }
+        .ai { color: #00f2ff; background: rgba(0, 242, 255, 0.05); padding: 12px; border-radius: 10px; align-self: flex-start; max-width: 85%; line-height: 1.4; border-left: 3px solid #00f2ff; font-size: 0.95rem; }
+        .user { color: #fff; background: rgba(255, 255, 255, 0.05); padding: 12px; border-radius: 10px; align-self: flex-end; max-width: 85%; opacity: 0.8; font-size: 0.95rem; }
         .input-box { padding: 20px; display: flex; border-top: 1px solid #222; background: #080808; border-radius: 0 0 15px 15px; }
         input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 1rem; }
-        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 1.5rem; transition: 0.3s; }
+        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 1.5rem; transition: 0.3s; padding-left: 10px; }
         button:hover { transform: scale(1.2); text-shadow: 0 0 10px #00f2ff; }
     </style>
 </head>
 <body>
 
     <div id="chat">
-        <div class="header">LESIVA | GLOBAL CORE</div>
+        <div class="header">LESIVA | GLOBAL CORE v13</div>
         <div id="msgs">
-            <div class="ai"><b>AI:</b> Брат, Тбилиси в эфире. Канал через Cloudflare стабилен. Теперь я доступен для всех! 🦾</div>
+            <div class="ai"><b>AI:</b> Тбилиси на связи. Мост Cloudflare активен. Напиши мне что-нибудь! 🦾</div>
         </div>
         <div class="input-box">
-            <input type="text" id="m" placeholder="Напиши что-нибудь..." autocomplete="off">
+            <input type="text" id="m" placeholder="Сообщение..." autocomplete="off">
             <button id="go">➔</button>
         </div>
     </div>
 
     <script>
+        // Твоя ссылка, которую мы проверили, она 100% живая
         const WORKER_URL = "https://young-cake-650b.alexeyai2929.workers.dev"; 
 
-        async function talk() {
+        async function sendMsg() {
             const input = document.getElementById('m');
             const val = input.value.trim();
             if(!val) return;
@@ -44,40 +45,37 @@
 
             const resDiv = document.createElement('div');
             resDiv.className = 'ai';
-            resDiv.innerHTML = '<b>AI:</b> Думаю...';
+            resDiv.innerHTML = '<b>AI:</b> В эфире...';
             msgs.appendChild(resDiv);
             msgs.scrollTop = msgs.scrollHeight;
 
             try {
-                // Отправляем чистый POST запрос на твой Cloudflare мост
+                // Прямой запрос к твоему воркеру
                 const response = await fetch(WORKER_URL, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "text/plain" }, // Используем plain для обхода жестких проверок CORS
                     body: JSON.stringify({ text: val })
                 });
 
-                if (!response.ok) throw new Error("Server error");
-
                 const data = await response.json();
 
-                // Разбираем ответ от Gemini через мост
                 if (data.candidates && data.candidates[0].content) {
                     const reply = data.candidates[0].content.parts[0].text;
                     resDiv.innerHTML = `<b>AI:</b> ${reply}`;
                 } else if (data.error) {
-                    resDiv.innerHTML = `<b>AI:</b> Ошибка ключа: ${data.error.message}`;
+                    resDiv.innerHTML = `<b>AI:</b> Ошибка API: ${data.error.message}`;
                 } else {
-                    resDiv.innerHTML = `<b>AI:</b> Брат, я тебя слышу, но Gemini прислал пустой ответ. Попробуй ещё раз.`;
+                    resDiv.innerHTML = `<b>AI:</b> Сервер ответил, но мыслей нет. Попробуй еще раз!`;
                 }
             } catch(e) {
-                resDiv.innerHTML = '<b>AI:</b> Ошибка связи. Убедись, что в Cloudflare статус "Active"!';
-                console.error("Fetch error:", e);
+                resDiv.innerHTML = '<b>AI:</b> Ошибка связи. Брат, нажми Ctrl + F5 на сайте!';
+                console.error("Connection Error:", e);
             }
             msgs.scrollTop = msgs.scrollHeight;
         }
 
-        document.getElementById('go').onclick = talk;
-        document.getElementById('m').onkeypress = (e) => { if(e.key === 'Enter') talk(); };
+        document.getElementById('go').onclick = sendMsg;
+        document.getElementById('m').onkeypress = (e) => { if(e.key === 'Enter') sendMsg(); };
     </script>
 </body>
 </html>
