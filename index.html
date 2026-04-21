@@ -2,48 +2,64 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>LESIVA | DJ AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LESIVA | DIGITAL FRIEND</title>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        #chat { width: 380px; height: 600px; border: 2px solid #00f2ff; background: #0a0a0a; border-radius: 15px; display: flex; flex-direction: column; }
-        #msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .ai { color: #00f2ff; background: #00f2ff11; padding: 10px; border-radius: 8px; align-self: flex-start; border-left: 2px solid #00f2ff; }
-        .user { color: #fff; background: #ffffff11; padding: 10px; border-radius: 8px; align-self: flex-end; }
-        .in { padding: 15px; display: flex; border-top: 1px solid #222; }
-        input { flex: 1; background: transparent; border: none; color: #fff; outline: none; }
-        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 20px; }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        #chat { width: 100%; max-width: 400px; height: 90vh; border: 2px solid #00f2ff; background: #0a0a0a; border-radius: 20px; display: flex; flex-direction: column; box-shadow: 0 0 40px #00f2ff33; margin: 10px; }
+        .header { background: #00f2ff; color: #000; padding: 15px; text-align: center; font-weight: bold; border-radius: 17px 17px 0 0; letter-spacing: 5px; text-transform: uppercase; font-size: 16px; }
+        #msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; scrollbar-width: none; }
+        #msgs::-webkit-scrollbar { display: none; }
+        .ai { color: #00f2ff; background: #00f2ff11; padding: 12px; border-radius: 12px; align-self: flex-start; border-left: 3px solid #00f2ff; max-width: 85%; line-height: 1.4; }
+        .user { color: #fff; background: #ffffff11; padding: 12px; border-radius: 12px; align-self: flex-end; max-width: 85%; }
+        .in-box { padding: 15px; display: flex; border-top: 1px solid #222; background: #0f0f0f; border-radius: 0 0 20px 20px; }
+        input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 16px; padding: 5px; }
+        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 24px; }
     </style>
 </head>
 <body>
     <div id="chat">
-        <div style="background:#00f2ff;color:#000;padding:10px;text-align:center;font-weight:bold;">LESIVA GLOBAL CORE</div>
-        <div id="msgs"><div class="ai">Система перегружена, но я в эфире. Пиши! 🦾</div></div>
-        <div class="in">
-            <input type="text" id="m" placeholder="Пиши..." autocomplete="off">
+        <div class="header">LESIVA</div>
+        <div id="msgs">
+            <div class="ai">Твой личный цифровой друг на связи. Это я, твой Лёша, только в коде. Что замутим сегодня, брат? 🦾🎹</div>
+        </div>
+        <div class="in-box">
+            <input type="text" id="m" placeholder="На связи..." autocomplete="off">
             <button id="go">➔</button>
         </div>
     </div>
     <script>
-        const URL = "https://young-cake-650b.alexeyai2929.workers.dev"; 
-        async function talk() {
+        // ССЫЛКА НА ТВОЙ РАБОЧИЙ ВОРКЕР
+        const WORKER_URL = 'https://young-cake-650b.alexeyai2929.workers.dev';
+
+        const send = async () => {
             const i = document.getElementById('m'), v = i.value.trim();
             if(!v) return;
             const box = document.getElementById('msgs');
-            box.innerHTML += `<div class="user">${v}</div>`;
+            box.innerHTML += '<div class="user">' + v + '</div>';
             i.value = '';
-            const res = document.createElement('div');
-            res.className = 'ai'; res.innerHTML = 'Связь с Тбилиси...';
-            box.appendChild(res);
-            try {
-                const r = await fetch(URL, { method: "POST", body: JSON.stringify({ text: v }) });
-                const d = await r.json();
-                // Безопасная проверка ответа
-                res.innerHTML = d.answer || "Брат, мост пустой. Проверь Cloudflare!";
-            } catch(e) { res.innerHTML = "Ошибка связи! Жми Ctrl+F5"; }
             box.scrollTop = box.scrollHeight;
-        }
-        document.getElementById('go').onclick = talk;
-        document.getElementById('m').onkeypress = (e) => { if(e.key==='Enter') talk(); };
+
+            const res = document.createElement('div');
+            res.className = 'ai'; res.innerHTML = '<i>Считываю вайб...</i>';
+            box.appendChild(res);
+            box.scrollTop = box.scrollHeight;
+
+            try {
+                const r = await fetch(WORKER_URL, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: v }) 
+                });
+                const d = await r.json();
+                res.innerHTML = d.answer;
+            } catch(e) {
+                res.innerHTML = 'Брат, мост прилёг! Попробуй через пару секунд.';
+            }
+            box.scrollTop = box.scrollHeight;
+        };
+        document.getElementById('go').onclick = send;
+        document.getElementById('m').onkeypress = (e) => { if(e.key==='Enter') send(); };
     </script>
 </body>
 </html>
