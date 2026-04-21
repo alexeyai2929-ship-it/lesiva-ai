@@ -25,18 +25,23 @@
         <div style="letter-spacing: 5px; opacity: 0.5; font-size: 0.7rem; margin-top:10px;">SYSTEM ONLINE | TBILISI</div>
     </div>
     <div id="chat-widget">
-        <div class="chat-header">GOOGLE CORE v1.6</div>
+        <div class="chat-header">GOOGLE CORE v1.7</div>
         <div id="messages">
-            <div class="ai-msg"><b>AI:</b> Брат, сменил калибр на Gemini Pro. Ща заговорит! 🦾</div>
+            <div class="ai-msg"><b>AI:</b> Брат, подкрутил последнюю гайку. Должно лететь! 🦾</div>
         </div>
         <div class="input-box">
-            <input type="text" id="userInput" placeholder="Пиши сюда..." autocomplete="off">
+            <input type="text" id="userInput" placeholder="Напиши что-нибудь..." autocomplete="off">
             <span class="send-btn" id="sendBtn">➔</span>
         </div>
     </div>
 
     <script>
+        // Твой ключ JHc8
         const API_KEY = "AIzaSyDrP6vXlRB4xzqbbKwz8RZqiaiRI0uJHc8";
+        
+        // ВНИМАНИЕ: Используем v1beta, но с полным путем к модели
+        const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
+
         const input = document.getElementById('userInput');
         const msgs = document.getElementById('messages');
         const sendBtn = document.getElementById('sendBtn');
@@ -54,14 +59,13 @@
             msgs.scrollTop = msgs.scrollHeight;
 
             try {
-                // Используем gemini-pro — она самая стабильная для v1
-                const url = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${API_KEY}`;
-                
-                const response = await fetch(url, {
+                const response = await fetch(API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: `Ты — музыкальный продюсер Lesiva из Тбилиси. Отвечай кратко, по-братски. Вопрос: ${text}` }] }]
+                        contents: [{ 
+                            parts: [{ text: `Ты — музыкальный продюсер Lesiva из Тбилиси. Отвечай очень кратко и по-братски. Вопрос: ${text}` }] 
+                        }]
                     })
                 });
 
@@ -70,16 +74,17 @@
                 const loader = document.getElementById(loadingId);
                 if (loader) loader.remove();
 
-                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts) {
                     const reply = data.candidates[0].content.parts[0].text;
                     msgs.innerHTML += `<div class="ai-msg"><b>AI:</b> ${reply}</div>`;
                 } else if (data.error) {
-                    // Если и тут ошибка, выводим её код, чтобы добить проблему
-                    msgs.innerHTML += `<div class="ai-msg" style="color: #ff4444;"><b>AI:</b> Ошибка: ${data.error.message} (Code: ${data.error.code})</div>`;
+                    msgs.innerHTML += `<div class="ai-msg" style="color: #ff4444;"><b>AI:</b> Ошибка: ${data.error.message}</div>`;
+                } else {
+                    msgs.innerHTML += `<div class="ai-msg" style="color: #ff4444;"><b>AI:</b> Неизвестный ответ от Google.</div>`;
                 }
             } catch (e) {
                 if (document.getElementById(loadingId)) {
-                    document.getElementById(loadingId).innerHTML = `<b style="color: #ff4444;">AI: Потеря сигнала. Попробуй еще раз.</b>`;
+                    document.getElementById(loadingId).innerHTML = `<b style="color: #ff4444;">AI: Потеря сигнала. Попробуй обновить страницу.</b>`;
                 }
             }
             msgs.scrollTop = msgs.scrollHeight;
