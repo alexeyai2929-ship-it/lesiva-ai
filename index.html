@@ -1,29 +1,4 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>LESIVA | AI FINAL</title>
-    <style>
-        body { background: #000; color: #fff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        #chat { width: 380px; height: 600px; border: 2px solid #00f2ff; background: #0a0a0a; border-radius: 15px; display: flex; flex-direction: column; }
-        #msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .ai { color: #00f2ff; background: #00f2ff11; padding: 10px; border-radius: 8px; align-self: flex-start; border-left: 2px solid #00f2ff; }
-        .user { color: #fff; background: #ffffff11; padding: 10px; border-radius: 8px; align-self: flex-end; }
-        .in { padding: 15px; display: flex; border-top: 1px solid #222; }
-        input { flex: 1; background: transparent; border: none; color: #fff; outline: none; }
-        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 20px; }
-    </style>
-</head>
-<body>
-    <div id="chat">
-        <div style="background:#00f2ff;color:#000;padding:10px;text-align:center;font-weight:bold;">LESIVA GLOBAL 🦾</div>
-        <div id="msgs"><div class="ai">Брат, я почистил систему. Теперь только прямой канал. Проверяй!</div></div>
-        <div class="in">
-            <input type="text" id="m" placeholder="Пиши..." autocomplete="off">
-            <button id="go">➔</button>
-        </div>
-    </div>
-    <script>
+<script>
         const URL = "https://young-cake-650b.alexeyai2929.workers.dev"; 
         async function talk() {
             const i = document.getElementById('m'), v = i.value.trim();
@@ -37,16 +12,18 @@
             try {
                 const r = await fetch(URL, { 
                     method: "POST", 
-                    headers: { "Content-Type": "text/plain" }, // Чтобы не было проблем с CORS
+                    headers: { "Content-Type": "text/plain" },
                     body: JSON.stringify({ text: v }) 
                 });
                 const d = await r.json();
-                res.innerHTML = d.answer || "Сервер молчит, но мост цел!";
-            } catch(e) { res.innerHTML = "Ошибка связи! Жми Ctrl+F5"; }
+                // Берем поле answer, которое мы настроили в Cloudflare
+                res.innerHTML = d.answer || "Нет ответа от сервера";
+            } catch(e) { 
+                res.innerHTML = "Ошибка связи! Жми Ctrl+F5"; 
+                console.error(e);
+            }
             box.scrollTop = box.scrollHeight;
         }
         document.getElementById('go').onclick = talk;
         document.getElementById('m').onkeypress = (e) => { if(e.key==='Enter') talk(); };
     </script>
-</body>
-</html>
