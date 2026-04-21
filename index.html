@@ -29,7 +29,7 @@
     <div id="chat-widget">
         <div class="chat-header">GOOGLE AI CORE v1.0</div>
         <div id="messages">
-            <div class="ai-msg"><b>AI:</b> Google-мозги на связи, брат! Терминал готов. 🦾</div>
+            <div class="ai-msg"><b>AI:</b> На связи, брат! Система на Google-мозгах активирована. 🦾</div>
         </div>
         <div class="input-box">
             <input type="text" id="userInput" placeholder="Напиши что-нибудь..." autocomplete="off">
@@ -47,8 +47,8 @@
     <script type="module">
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
-        // Ключ уже вписан, брат!
-        const API_KEY = "AIzaSyD9LpX9ueO7-6Me6KeVmHntTWdhnJVJ3pE"; 
+        // Твой новый ключ, брат
+        const API_KEY = "AIzaSyDrP6vXlRB4xzqbbKwz8RZqiaiRI0uJHc8"; 
         
         const genAI = new GoogleGenerativeAI(API_KEY);
         const model = genAI.getGenerativeModel({ 
@@ -69,7 +69,7 @@
             msgs.scrollTop = msgs.scrollHeight;
 
             const loadingId = "load-" + Date.now();
-            msgs.innerHTML += `<div class="ai-msg" id="${loadingId}"><b>AI:</b> Печатаю...</div>`;
+            msgs.innerHTML += `<div class="ai-msg" id="${loadingId}"><b>AI:</b> Думаю...</div>`;
             msgs.scrollTop = msgs.scrollHeight;
 
             try {
@@ -78,7 +78,8 @@
                 document.getElementById(loadingId).remove();
                 msgs.innerHTML += `<div class="ai-msg"><b>AI:</b> ${response.text()}</div>`;
             } catch (e) {
-                document.getElementById(loadingId).innerHTML = "Брат, чет связь барахлит. Проверь баланс в консоли Google.";
+                document.getElementById(loadingId).innerHTML = "Брат, помехи в канале. Проверь ключ или обнови страницу!";
+                console.error(e);
             }
             msgs.scrollTop = msgs.scrollHeight;
         }
