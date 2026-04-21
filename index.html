@@ -3,58 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LESIVA | TERMINAL</title>
+    <title>LESIVA | OFFICIAL AI</title>
     <style>
-        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        #chat { width: 380px; height: 600px; border: 2px solid #00f2ff; background: #0a0a0a; border-radius: 15px; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(0, 242, 255, 0.3); }
-        .header { background: #00f2ff; color: #000; padding: 12px; text-align: center; font-weight: bold; border-radius: 12px 12px 0 0; letter-spacing: 2px; }
-        #messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; scrollbar-width: none; }
-        .ai { color: #00f2ff; background: rgba(0, 242, 255, 0.1); padding: 10px; border-radius: 8px; align-self: flex-start; max-width: 85%; }
-        .user { color: #fff; background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; align-self: flex-end; max-width: 85%; }
-        .input-box { padding: 20px; display: flex; border-top: 1px solid #222; }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        #chat { width: 380px; height: 600px; border: 2px solid #00f2ff; background: #0a0a0a; border-radius: 15px; display: flex; flex-direction: column; box-shadow: 0 0 40px rgba(0, 242, 255, 0.2); }
+        .header { background: #00f2ff; color: #000; padding: 15px; text-align: center; font-weight: bold; border-radius: 12px 12px 0 0; text-transform: uppercase; letter-spacing: 2px; }
+        #msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; scrollbar-width: none; }
+        .ai { color: #00f2ff; background: rgba(0, 242, 255, 0.05); padding: 12px; border-radius: 10px; align-self: flex-start; max-width: 85%; line-height: 1.4; border-left: 3px solid #00f2ff; }
+        .user { color: #fff; background: rgba(255, 255, 255, 0.05); padding: 12px; border-radius: 10px; align-self: flex-end; max-width: 85%; opacity: 0.8; }
+        .input-box { padding: 20px; display: flex; border-top: 1px solid #222; background: #080808; border-radius: 0 0 15px 15px; }
         input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 1rem; }
-        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 1.5rem; }
+        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 1.5rem; transition: 0.3s; }
+        button:hover { transform: scale(1.2); text-shadow: 0 0 10px #00f2ff; }
     </style>
 </head>
 <body>
+
     <div id="chat">
-        <div class="header">LESIVA | TBILISI</div>
-        <div id="messages"><div class="ai"><b>AI:</b> Брат, я восстановил мост. Тбилиси снова в эфире! 🦾</div></div>
+        <div class="header">LESIVA | GLOBAL CORE</div>
+        <div id="msgs">
+            <div class="ai"><b>AI:</b> Брат, Тбилиси в эфире. Канал через Cloudflare стабилен. Теперь я доступен для всех! 🦾</div>
+        </div>
         <div class="input-box">
-            <input type="text" id="msg" placeholder="Напиши что-нибудь..." autocomplete="off">
+            <input type="text" id="m" placeholder="Напиши что-нибудь..." autocomplete="off">
             <button id="go">➔</button>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxD_-YClEzCaaPUDoWF1KTUXKY8dlQ43zKhqe6coSFwyS68BXpIch2woPLI4WHh8NZMTw/exec";
+        // Твоя ссылка, которую мы создали в Cloudflare
+        const WORKER_URL = "https://young-cake-650b.alexeyai2929.workers.dev"; 
 
-        async function send() {
-            const input = document.getElementById('msg'), val = input.value.trim();
+        async function talk() {
+            const input = document.getElementById('m');
+            const val = input.value.trim();
             if(!val) return;
-            const msgs = document.getElementById('messages');
+
+            const msgs = document.getElementById('msgs');
             msgs.innerHTML += `<div class="user"><b>YOU:</b> ${val}</div>`;
             input.value = '';
+
             const resDiv = document.createElement('div');
-            resDiv.className = 'ai'; resDiv.innerHTML = '<b>AI:</b> На связи...';
+            resDiv.className = 'ai';
+            resDiv.innerHTML = '<b>AI:</b> Слушаю...';
             msgs.appendChild(resDiv);
             msgs.scrollTop = msgs.scrollHeight;
 
             try {
-                const response = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify({text: val}) });
+                const response = await fetch(WORKER_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text: val })
+                });
+
                 const data = await response.json();
+
                 if (data.candidates && data.candidates[0].content) {
-                    resDiv.innerHTML = `<b>AI:</b> ${data.candidates[0].content.parts[0].text}`;
+                    const reply = data.candidates[0].content.parts[0].text;
+                    resDiv.innerHTML = `<b>AI:</b> ${reply}`;
                 } else {
-                    resDiv.innerHTML = `<b>AI:</b> Ошибка API. Нажми еще раз через 5 секунд!`;
+                    resDiv.innerHTML = `<b>AI:</b> Брат, ИИ задумался. Нажми еще раз через 5 сек!`;
                 }
             } catch(e) {
-                resDiv.innerHTML = '<b>AI:</b> Обрыв связи. Проверь "Новую версию" в скрипте!';
+                resDiv.innerHTML = '<b>AI:</b> Ошибка связи. Проверь, нажал ли ты кнопку Deploy в Cloudflare!';
             }
             msgs.scrollTop = msgs.scrollHeight;
         }
-        document.getElementById('go').onclick = send;
-        document.getElementById('msg').onkeypress = (e) => { if(e.key === 'Enter') send(); };
+
+        document.getElementById('go').onclick = talk;
+        document.getElementById('m').onkeypress = (e) => { if(e.key === 'Enter') talk(); };
     </script>
 </body>
 </html>
