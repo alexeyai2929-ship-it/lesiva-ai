@@ -1,37 +1,23 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8"><title>LESIVA | OPENROUTER</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LESIVA | TERMINAL</title>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        #chat { width: 380px; height: 600px; border: 2px solid #00f2ff; background: #0a0a0a; display: flex; flex-direction: column; border-radius: 15px; }
-        #msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .ai { color: #00f2ff; background: rgba(0, 242, 255, 0.1); padding: 10px; border-radius: 8px; align-self: flex-start; }
-        .user { color: #fff; background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; align-self: flex-end; }
-        .box { padding: 15px; display: flex; border-top: 1px solid #222; }
-        input { flex: 1; background: transparent; border: none; color: #fff; outline: none; }
-        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; }
+        body { background: #000; margin: 0; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Segoe UI', sans-serif; }
+        .header { color: #00f2ff; font-size: 2rem; font-weight: bold; letter-spacing: 10px; margin-bottom: 20px; text-shadow: 0 0 15px #00f2ff; }
+        .chat-wrapper { width: 95%; max-width: 400px; height: 600px; border: 2px solid #00f2ff; border-radius: 15px; overflow: hidden; box-shadow: 0 0 30px rgba(0, 242, 255, 0.2); }
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
-    <div id="chat">
-        <div id="msgs"><div class="ai"><b>AI:</b> Брат, я включил OpenRouter. Этот канал не убить. Проверяй!</div></div>
-        <div class="box"><input type="text" id="m" placeholder="Пиши..."><button id="g">➔</button></div>
+    <div class="header">LESIVA</div>
+    <div class="chat-wrapper">
+        <iframe
+            src="https://www.blackbox.ai/agent/LesivaAI0lW90E4"
+            allow="clipboard-write"
+        ></iframe>
     </div>
-    <script>
-        const S_URL = "https://script.google.com/macros/s/AKfycbxD_-YClEzCaaPUDoWF1KTUXKY8dlQ43zKhqe6coSFwyS68BXpIch2woPLI4WHh8NZMTw/exec";
-        async function talk() {
-            const i = document.getElementById('m'), v = i.value.trim(); if(!v) return;
-            document.getElementById('msgs').innerHTML += `<div class="user">${v}</div>`; i.value = '';
-            const d = document.createElement('div'); d.className = 'ai'; d.innerHTML = '...'; 
-            document.getElementById('msgs').appendChild(d);
-            try {
-                const r = await fetch(S_URL, {method:"POST", body:JSON.stringify({text:v})});
-                const j = await r.json();
-                d.innerHTML = j.choices[0].message.content;
-            } catch(e) { d.innerHTML = "Ошибка связи."; }
-        }
-        document.getElementById('g').onclick = talk;
-    </script>
 </body>
 </html>
