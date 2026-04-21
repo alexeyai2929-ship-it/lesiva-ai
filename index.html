@@ -5,19 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LESIVA | TERMINAL</title>
     <style>
-        body { background: #000; margin: 0; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Segoe UI', sans-serif; }
-        .header { color: #00f2ff; font-size: 2rem; font-weight: bold; letter-spacing: 10px; margin-bottom: 20px; text-shadow: 0 0 15px #00f2ff; }
-        .chat-wrapper { width: 95%; max-width: 400px; height: 600px; border: 2px solid #00f2ff; border-radius: 15px; overflow: hidden; box-shadow: 0 0 30px rgba(0, 242, 255, 0.2); }
-        iframe { width: 100%; height: 100%; border: none; }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        #chat { width: 380px; height: 600px; border: 2px solid #00f2ff; background: #0a0a0a; border-radius: 15px; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(0, 242, 255, 0.3); }
+        .header { background: #00f2ff; color: #000; padding: 12px; text-align: center; font-weight: bold; border-radius: 12px 12px 0 0; letter-spacing: 2px; }
+        #messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; scrollbar-width: none; }
+        .ai { color: #00f2ff; background: rgba(0, 242, 255, 0.1); padding: 10px; border-radius: 8px; align-self: flex-start; max-width: 85%; }
+        .user { color: #fff; background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; align-self: flex-end; max-width: 85%; }
+        .input-box { padding: 20px; display: flex; border-top: 1px solid #222; }
+        input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 1rem; }
+        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 1.5rem; }
     </style>
 </head>
 <body>
-    <div class="header">LESIVA</div>
-    <div class="chat-wrapper">
-        <iframe
-            src="https://www.blackbox.ai/agent/LesivaAI0lW90E4"
-            allow="clipboard-write"
-        ></iframe>
+    <div id="chat">
+        <div class="header">LESIVA | TBILISI</div>
+        <div id="messages"><div class="ai"><b>AI:</b> Брат, я восстановил мост. Тбилиси снова в эфире! 🦾</div></div>
+        <div class="input-box">
+            <input type="text" id="msg" placeholder="Напиши что-нибудь..." autocomplete="off">
+            <button id="go">➔</button>
+        </div>
     </div>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxD_-YClEzCaaPUDoWF1KTUXKY8dlQ43zKhqe6coSFwyS68BXpIch2woPLI4WHh8NZMTw/exec";
+
+        async function send() {
+            const input = document.getElementById('msg'), val = input.value.trim();
+            if(!val) return;
+            const msgs = document.getElementById('messages');
+            msgs.innerHTML += `<div class="user"><b>YOU:</b> ${val}</div>`;
+            input.value = '';
+            const resDiv = document.createElement('div');
+            resDiv.className = 'ai'; resDiv.innerHTML = '<b>AI:</b> На связи...';
+            msgs.appendChild(resDiv);
+            msgs.scrollTop = msgs.scrollHeight;
+
+            try {
+                const response = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify({text: val}) });
+                const data = await response.json();
+                if (data.candidates && data.candidates[0].content) {
+                    resDiv.innerHTML = `<b>AI:</b> ${data.candidates[0].content.parts[0].text}`;
+                } else {
+                    resDiv.innerHTML = `<b>AI:</b> Ошибка API. Нажми еще раз через 5 секунд!`;
+                }
+            } catch(e) {
+                resDiv.innerHTML = '<b>AI:</b> Обрыв связи. Проверь "Новую версию" в скрипте!';
+            }
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+        document.getElementById('go').onclick = send;
+        document.getElementById('msg').onkeypress = (e) => { if(e.key === 'Enter') send(); };
+    </script>
 </body>
 </html>
