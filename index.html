@@ -22,22 +22,29 @@
 <body>
     <div class="main-container">
         <h1>LESIVA</h1>
-        <div style="letter-spacing: 5px; opacity: 0.5; font-size: 0.7rem; margin-top:10px;">SYSTEM ONLINE | TBILISI</div>
+        <div style="letter-spacing: 5px; opacity: 0.5; font-size: 0.7rem; margin-top:10px;">DIRECT CORE v4.0</div>
     </div>
     <div id="chat-widget">
-        <div class="chat-header">TERMINAL v3.1 (STABLE PROXY)</div>
+        <div class="chat-header">TERMINAL | TBILISI LIVE</div>
         <div id="messages">
-            <div class="ai-msg"><b>AI:</b> Брат, сменил маршрут. Давай ещё тест! 🦾</div>
+            <div class="ai-msg"><b>AI:</b> Брат, я переподключил мозг напрямую. Тестируй! 🦾</div>
         </div>
         <div class="input-box">
-            <input type="text" id="userInput" placeholder="Пиши мне..." autocomplete="off">
+            <input type="text" id="userInput" placeholder="Напиши что-нибудь..." autocomplete="off">
             <span class="send-btn" id="sendBtn">➔</span>
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+
         const API_KEY = "AIzaSyDrP6vXlRB4xzqbbKwz8RZqiaiRI0uJHc8";
-        const input = document.getElementById('userInput'), msgs = document.getElementById('messages'), sendBtn = document.getElementById('sendBtn');
+        const genAI = new GoogleGenerativeAI(API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        const input = document.getElementById('userInput'), 
+              msgs = document.getElementById('messages'), 
+              sendBtn = document.getElementById('sendBtn');
 
         async function talk() {
             const text = input.value.trim();
@@ -52,29 +59,15 @@
             msgs.scrollTop = msgs.scrollHeight;
 
             try {
-                // Прямой путь через Corsproxy.io
-                const targetUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
-                const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
+                const result = await model.generateContent(`Ты — Lesiva, DJ из Тбилиси. Отвечай кратко и по-пацански. Вопрос: ${text}`);
+                const response = await result.response;
+                const reply = response.text();
 
-                const response = await fetch(proxyUrl, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: `Ты — Lesiva, DJ из Тбилиси. Отвечай кратко, по-пацански. Вопрос: ${text}` }] }]
-                    })
-                });
-
-                const data = await response.json();
                 document.getElementById(loadingId).remove();
-
-                if (data.candidates && data.candidates[0].content) {
-                    const reply = data.candidates[0].content.parts[0].text;
-                    msgs.innerHTML += `<div class="ai-msg"><b>AI:</b> ${reply}</div>`;
-                } else if (data.error) {
-                    msgs.innerHTML += `<div class="ai-msg" style="color:#ff4444;"><b>AI:</b> Ошибка: ${data.error.message}</div>`;
-                }
+                msgs.innerHTML += `<div class="ai-msg"><b>AI:</b> ${reply}</div>`;
             } catch (e) {
-                document.getElementById(loadingId).innerHTML = "<b style='color:#ff4444;'>AI: Проблема с каналом. Нажми ещё раз через 3 сек.</b>";
+                console.error(e);
+                document.getElementById(loadingId).innerHTML = `<b style="color: #ff4444;">AI: Ошибка. Проверь VPN или ключ в консоли.</b>`;
             }
             msgs.scrollTop = msgs.scrollHeight;
         }
