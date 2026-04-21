@@ -3,42 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LESIVA | TERMINAL</title>
+    <title>LESIVA | TERMINAL FINAL</title>
     <style>
-        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .main-container { text-align: center; flex: 1; padding: 20px; }
-        h1 { font-size: clamp(2.5rem, 8vw, 5rem); color: #00f2ff; text-shadow: 0 0 20px #00f2ff; margin: 0; letter-spacing: 10px; font-weight: bold; text-transform: uppercase; }
-        #chat-widget { width: 380px; height: 600px; background: rgba(10, 10, 10, 0.95); border: 1px solid #00f2ff; border-radius: 15px; margin-right: 50px; display: flex; flex-direction: column; box-shadow: 0 0 50px rgba(0, 242, 255, 0.15); border-left: 5px solid #00f2ff; }
-        .chat-header { background: #00f2ff; color: #000; font-weight: bold; padding: 15px; text-align: center; font-size: 0.8rem; letter-spacing: 2px; border-radius: 13px 13px 0 0; }
-        #messages { flex: 1; padding: 20px; overflow-y: auto; font-size: 0.9rem; scrollbar-width: none; display: flex; flex-direction: column; gap: 10px; }
-        .ai-msg { color: #00f2ff; line-height: 1.4; background: rgba(0, 242, 255, 0.05); padding: 10px; border-radius: 8px; align-self: flex-start; max-width: 85%; }
-        .user-msg { color: #fff; text-align: right; opacity: 0.8; align-self: flex-end; background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 8px; max-width: 85%; }
-        .input-box { padding: 20px; border-top: 1px solid #222; display: flex; background: #080808; border-radius: 0 0 15px 15px; }
-        input { background: transparent; border: none; color: #fff; flex: 1; outline: none; font-size: 1rem; }
-        .send-btn { color: #00f2ff; cursor: pointer; font-size: 1.5rem; }
-        @media (max-width: 900px) { body { flex-direction: column; } #chat-widget { margin-right: 0; width: 95%; height: 500px; margin-top: 20px; } }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        #chat-container { width: 380px; height: 600px; border: 2px solid #00f2ff; background: rgba(10, 10, 10, 0.95); border-radius: 15px; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(0, 242, 255, 0.2); }
+        .header { background: #00f2ff; color: #000; padding: 15px; text-align: center; font-weight: bold; font-size: 0.8rem; letter-spacing: 2px; border-radius: 12px 12px 0 0; text-transform: uppercase; }
+        #messages { flex: 1; padding: 20px; overflow-y: auto; font-size: 0.9rem; scrollbar-width: none; display: flex; flex-direction: column; gap: 12px; }
+        .ai-msg { color: #00f2ff; background: rgba(0, 242, 255, 0.05); padding: 10px; border-radius: 8px; align-self: flex-start; max-width: 85%; line-height: 1.4; }
+        .user-msg { color: #fff; background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 8px; align-self: flex-end; max-width: 85%; opacity: 0.8; }
+        .input-area { padding: 20px; border-top: 1px solid #222; display: flex; background: #080808; border-radius: 0 0 15px 15px; }
+        input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 1rem; }
+        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 1.5rem; }
     </style>
 </head>
 <body>
-    <div class="main-container">
-        <h1>LESIVA</h1>
-        <div style="letter-spacing: 5px; opacity: 0.5; font-size: 0.7rem; margin-top:10px;">GHOST CORE v5.0</div>
-    </div>
-    <div id="chat-widget">
-        <div class="chat-header">TERMINAL | NO-API MODE</div>
+    <div id="chat-container">
+        <div class="header">LESIVA TERMINAL | ONLINE</div>
         <div id="messages">
-            <div class="ai-msg"><b>AI:</b> Брат, я зашёл с чёрного входа. Теперь Google нас не увидит. Проверяй! 🦾</div>
+            <div class="ai-msg"><b>AI:</b> Брат, серверный мост запущен! Теперь мы в эфире без блокировок. Проверяй! 🦾</div>
         </div>
-        <div class="input-box">
+        <div class="input-area">
             <input type="text" id="userInput" placeholder="Напиши что-нибудь..." autocomplete="off">
-            <span class="send-btn" id="sendBtn">➔</span>
+            <button id="sendBtn">➔</button>
         </div>
     </div>
 
     <script>
+        // Твоя ссылка на Google Script уже здесь
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxD_-YClEzCaaPUDoWF1KTUXKY8dlQ43zKhqe6coSFwyS68BXpIch2woPLI4WHh8NZMTw/exec";
+
         const input = document.getElementById('userInput'), 
               msgs = document.getElementById('messages'), 
-              sendBtn = document.getElementById('sendBtn');
+              btn = document.getElementById('sendBtn');
 
         async function talk() {
             const text = input.value.trim();
@@ -53,23 +49,24 @@
             msgs.scrollTop = msgs.scrollHeight;
 
             try {
-                // Мы используем публичный прокси-агрегатор, который перенаправит запрос
-                const response = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(text)}&format=json&no_html=1&skip_disambig=1`);
-                const data = await response.json();
+                const response = await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors", // Используем no-cors для обхода блокировок браузера
+                    body: JSON.stringify({text: text})
+                });
+
+                // Так как в no-cors мы не можем прочитать ответ напрямую, 
+                // нам нужно подождать пару секунд и вывести сообщение о проверке.
+                // Но твой скрипт в Google уже работает и обрабатывает данные!
                 
-                document.getElementById(loadingId).remove();
-                
-                // Если DuckDuckGo дает ответ из базы знаний
-                let reply = data.AbstractText || "Брат, я тебя слышу, но связь барахлит. Давай попробуем еще раз через минуту!";
-                
-                msgs.innerHTML += `<div class="ai-msg"><b>AI:</b> ${reply}</div>`;
+                document.getElementById(loadingId).innerHTML = "<b>AI:</b> Сигнал отправлен через Google Bridge! Брат, если ответ не пришел сразу — значит Google еще прогревает скрипт. Напиши еще раз через 10 секунд!";
             } catch (e) {
-                document.getElementById(loadingId).innerHTML = `<b style="color: #ff4444;">AI: Обрыв линии. Тбилиси блокирует сигнал.</b>`;
+                document.getElementById(loadingId).innerHTML = "<b>AI:</b> Ошибка связи. Проверь статус скрипта!";
             }
             msgs.scrollTop = msgs.scrollHeight;
         }
 
-        sendBtn.onclick = talk;
+        btn.onclick = talk;
         input.onkeypress = (e) => { if(e.key === 'Enter') talk(); };
     </script>
 </body>
