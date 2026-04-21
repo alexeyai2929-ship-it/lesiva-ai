@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LESIVA | ULTIMATE TERMINAL</title>
+    <title>LESIVA | TERMINAL</title>
     <style>
         body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .main-container { text-align: center; flex: 1; padding: 20px; }
@@ -25,9 +25,9 @@
         <div style="letter-spacing: 5px; opacity: 0.5; font-size: 0.7rem; margin-top:10px;">SYSTEM ONLINE | TBILISI</div>
     </div>
     <div id="chat-widget">
-        <div class="chat-header">TERMINAL v3.0 (PROXY MODE)</div>
+        <div class="chat-header">TERMINAL v3.1 (STABLE PROXY)</div>
         <div id="messages">
-            <div class="ai-msg"><b>AI:</b> Брат, я включил обходной канал. Теперь точно прорвемся! 🦾</div>
+            <div class="ai-msg"><b>AI:</b> Брат, сменил маршрут. Давай ещё тест! 🦾</div>
         </div>
         <div class="input-box">
             <input type="text" id="userInput" placeholder="Пиши мне..." autocomplete="off">
@@ -37,9 +37,7 @@
 
     <script>
         const API_KEY = "AIzaSyDrP6vXlRB4xzqbbKwz8RZqiaiRI0uJHc8";
-        const input = document.getElementById('userInput');
-        const msgs = document.getElementById('messages');
-        const sendBtn = document.getElementById('sendBtn');
+        const input = document.getElementById('userInput'), msgs = document.getElementById('messages'), sendBtn = document.getElementById('sendBtn');
 
         async function talk() {
             const text = input.value.trim();
@@ -54,33 +52,29 @@
             msgs.scrollTop = msgs.scrollHeight;
 
             try {
-                // Используем AllOrigins прокси, чтобы скрыть наш домен от Google
-                const googleUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
-                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(googleUrl)}`;
+                // Прямой путь через Corsproxy.io
+                const targetUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+                const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
 
                 const response = await fetch(proxyUrl, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: `Ты — Lesiva, DJ из Тбилиси. Отвечай кратко, по-братски. Вопрос: ${text}` }] }]
+                        contents: [{ parts: [{ text: `Ты — Lesiva, DJ из Тбилиси. Отвечай кратко, по-пацански. Вопрос: ${text}` }] }]
                     })
                 });
 
-                // Прокси возвращает JSON, где нужные данные в поле 'contents'
-                const rawData = await response.json();
-                const data = JSON.parse(rawData.contents);
-                
+                const data = await response.json();
                 document.getElementById(loadingId).remove();
 
                 if (data.candidates && data.candidates[0].content) {
                     const reply = data.candidates[0].content.parts[0].text;
                     msgs.innerHTML += `<div class="ai-msg"><b>AI:</b> ${reply}</div>`;
-                } else {
-                    msgs.innerHTML += `<div class="ai-msg" style="color:#ff4444;"><b>AI:</b> Ошибка формата. Попробуй еще раз.</div>`;
+                } else if (data.error) {
+                    msgs.innerHTML += `<div class="ai-msg" style="color:#ff4444;"><b>AI:</b> Ошибка: ${data.error.message}</div>`;
                 }
             } catch (e) {
-                document.getElementById(loadingId).innerHTML = "<b>AI:</b> Брат, нажми еще раз, прокси прогревается!";
-                console.error(e);
+                document.getElementById(loadingId).innerHTML = "<b style='color:#ff4444;'>AI: Проблема с каналом. Нажми ещё раз через 3 сек.</b>";
             }
             msgs.scrollTop = msgs.scrollHeight;
         }
