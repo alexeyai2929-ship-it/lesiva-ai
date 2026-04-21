@@ -3,32 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LESIVA | OFFICIAL TERMINAL</title>
+    <title>LESIVA | TERMINAL</title>
     <style>
         body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .main-container { text-align: center; flex: 1; padding: 20px; }
         h1 { font-size: clamp(2.5rem, 8vw, 5rem); color: #00f2ff; text-shadow: 0 0 20px #00f2ff; margin: 0; letter-spacing: 10px; font-weight: bold; text-transform: uppercase; }
         #chat-widget { width: 380px; height: 600px; background: rgba(10, 10, 10, 0.95); border: 1px solid #00f2ff; border-radius: 15px; margin-right: 50px; display: flex; flex-direction: column; box-shadow: 0 0 50px rgba(0, 242, 255, 0.15); border-left: 5px solid #00f2ff; }
-        .chat-header { background: #00f2ff; color: #000; font-weight: bold; padding: 15px; text-align: center; font-size: 0.8rem; letter-spacing: 2px; border-radius: 13px 13px 0 0; text-transform: uppercase; }
+        .chat-header { background: #00f2ff; color: #000; font-weight: bold; padding: 15px; text-align: center; font-size: 0.8rem; letter-spacing: 2px; border-radius: 13px 13px 0 0; }
         #messages { flex: 1; padding: 20px; overflow-y: auto; font-size: 0.9rem; scrollbar-width: none; display: flex; flex-direction: column; gap: 10px; }
-        #messages::-webkit-scrollbar { display: none; }
         .ai-msg { color: #00f2ff; line-height: 1.4; background: rgba(0, 242, 255, 0.05); padding: 10px; border-radius: 8px; align-self: flex-start; max-width: 85%; }
         .user-msg { color: #fff; text-align: right; opacity: 0.8; align-self: flex-end; background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 8px; max-width: 85%; }
         .input-box { padding: 20px; border-top: 1px solid #222; display: flex; background: #080808; border-radius: 0 0 15px 15px; }
         input { background: transparent; border: none; color: #fff; flex: 1; outline: none; font-size: 1rem; }
         .send-btn { color: #00f2ff; cursor: pointer; font-size: 1.5rem; }
-        @media (max-width: 900px) { body { flex-direction: column; overflow-y: auto; } #chat-widget { margin-right: 0; width: 95%; height: 500px; margin-top: 20px; } h1 { font-size: 3rem; } }
+        @media (max-width: 900px) { body { flex-direction: column; } #chat-widget { margin-right: 0; width: 95%; height: 500px; margin-top: 20px; } }
     </style>
 </head>
 <body>
     <div class="main-container">
         <h1>LESIVA</h1>
-        <div style="letter-spacing: 5px; opacity: 0.5; font-size: 0.7rem; margin-top:10px;">SYSTEM ONLINE | TBILISI</div>
+        <div style="letter-spacing: 5px; opacity: 0.5; font-size: 0.7rem; margin-top:10px;">ULTIMATE CORE v2.1</div>
     </div>
     <div id="chat-widget">
-        <div class="chat-header">TERMINAL v2.0 (STABLE HF)</div>
+        <div class="chat-header">TERMINAL | HF ONLINE</div>
         <div id="messages">
-            <div class="ai-msg"><b>AI:</b> Брат, я в эфире! Теперь всё работает на Hugging Face. Наваливай базу! 🦾</div>
+            <div class="ai-msg"><b>AI:</b> Брат, я обновил протоколы. Теперь точно прорвемся! 🦾</div>
         </div>
         <div class="input-box">
             <input type="text" id="userInput" placeholder="Напиши мне..." autocomplete="off">
@@ -37,7 +36,6 @@
     </div>
 
     <script>
-        // Твой токен уже вшит, брат
         const HF_TOKEN = "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"; 
 
         const input = document.getElementById('userInput');
@@ -61,26 +59,25 @@
                     method: "POST",
                     headers: { 
                         "Authorization": `Bearer ${HF_TOKEN}`,
-                        "Content-Type": "application/json" 
+                        "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        inputs: `<s>[INST] Ты — музыкальный продюсер Lesiva из Тбилиси. Отвечай кратко, по-братски, на русском. Твой ответ на: ${text} [/INST]`,
-                        parameters: { max_new_tokens: 150, temperature: 0.7 }
+                        inputs: `[INST] Ты — Lesiva, продюсер из Тбилиси. Отвечай кратко, по-братски. Вопрос: ${text} [/INST]`,
+                        options: { wait_for_model: true }
                     })
                 });
 
                 const data = await response.json();
                 document.getElementById(loadingId).remove();
 
-                if (data[0] && data[0].generated_text) {
-                    let fullText = data[0].generated_text;
-                    let reply = fullText.split('[/INST]').pop().trim();
+                if (data && data[0] && data[0].generated_text) {
+                    let reply = data[0].generated_text.split('[/INST]').pop().trim();
                     msgs.innerHTML += `<div class="ai-msg"><b>AI:</b> ${reply}</div>`;
-                } else {
-                    throw new Error("API Error");
+                } else if (data.error) {
+                    msgs.innerHTML += `<div class="ai-msg" style="color: #ff4444;"><b>AI:</b> Ошибка: ${data.error}</div>`;
                 }
             } catch (e) {
-                document.getElementById(loadingId).innerHTML = "<b>AI:</b> Брат, обнови страницу, сигнал прервался!";
+                document.getElementById(loadingId).innerHTML = `<b style="color: #ff4444;">AI: Сигнал не проходит. Попробуй нажать кнопку еще раз через 5 секунд!</b>`;
             }
             msgs.scrollTop = msgs.scrollHeight;
         }
