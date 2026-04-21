@@ -2,25 +2,24 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>LESIVA | FREE AI</title>
+    <title>LESIVA | AI FINAL</title>
     <style>
         body { background: #000; color: #fff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        #chat { width: 380px; height: 600px; border: 2px solid #00f2ff; background: #0a0a0a; border-radius: 15px; display: flex; flex-direction: column; box-shadow: 0 0 30px #00f2ff33; }
-        .header { background: #00f2ff; color: #000; padding: 12px; text-align: center; font-weight: bold; border-radius: 12px 12px 0 0; }
-        #msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; scrollbar-width: none; }
+        #chat { width: 380px; height: 600px; border: 2px solid #00f2ff; background: #0a0a0a; border-radius: 15px; display: flex; flex-direction: column; }
+        #msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
         .ai { color: #00f2ff; background: #00f2ff11; padding: 10px; border-radius: 8px; align-self: flex-start; border-left: 2px solid #00f2ff; }
         .user { color: #fff; background: #ffffff11; padding: 10px; border-radius: 8px; align-self: flex-end; }
-        .in-box { padding: 15px; display: flex; border-top: 1px solid #222; }
+        .in { padding: 15px; display: flex; border-top: 1px solid #222; }
         input { flex: 1; background: transparent; border: none; color: #fff; outline: none; }
         button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 20px; }
     </style>
 </head>
 <body>
     <div id="chat">
-        <div class="header">LESIVA | FREE AI 🦾</div>
-        <div id="msgs"><div class="ai">Система Llama 3 активна. Пиши, я на связи!</div></div>
-        <div class="in-box">
-            <input type="text" id="m" placeholder="Пиши по-братски..." autocomplete="off">
+        <div style="background:#00f2ff;color:#000;padding:10px;text-align:center;font-weight:bold;">LESIVA GLOBAL 🦾</div>
+        <div id="msgs"><div class="ai">Брат, я почистил систему. Теперь только прямой канал. Проверяй!</div></div>
+        <div class="in">
+            <input type="text" id="m" placeholder="Пиши..." autocomplete="off">
             <button id="go">➔</button>
         </div>
     </div>
@@ -33,14 +32,16 @@
             box.innerHTML += `<div class="user">${v}</div>`;
             i.value = '';
             const res = document.createElement('div');
-            res.className = 'ai'; res.innerHTML = 'Думаю...';
+            res.className = 'ai'; res.innerHTML = 'Связь с Тбилиси...';
             box.appendChild(res);
             try {
-                // Отправляем текст на твой активный воркер
-                const r = await fetch(URL, { method: "POST", body: JSON.stringify({ text: v }) });
+                const r = await fetch(URL, { 
+                    method: "POST", 
+                    headers: { "Content-Type": "text/plain" }, // Чтобы не было проблем с CORS
+                    body: JSON.stringify({ text: v }) 
+                });
                 const d = await r.json();
-                // Читаем поле 'answer', которое выдает твой новый код в Cloudflare
-                res.innerHTML = d.answer || "Брат, сервер молчит. Проверь Deploy!";
+                res.innerHTML = d.answer || "Сервер молчит, но мост цел!";
             } catch(e) { res.innerHTML = "Ошибка связи! Жми Ctrl+F5"; }
             box.scrollTop = box.scrollHeight;
         }
