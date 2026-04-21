@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LESIVA | TERMINAL FINAL</title>
+    <title>LESIVA | OFFICIAL TERMINAL</title>
     <style>
-        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         #chat-container { width: 380px; height: 600px; border: 2px solid #00f2ff; background: rgba(10, 10, 10, 0.95); border-radius: 15px; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(0, 242, 255, 0.2); }
         .header { background: #00f2ff; color: #000; padding: 15px; text-align: center; font-weight: bold; font-size: 0.8rem; letter-spacing: 2px; border-radius: 12px 12px 0 0; text-transform: uppercase; }
         #messages { flex: 1; padding: 20px; overflow-y: auto; font-size: 0.9rem; scrollbar-width: none; display: flex; flex-direction: column; gap: 12px; }
-        .ai-msg { color: #00f2ff; background: rgba(0, 242, 255, 0.05); padding: 10px; border-radius: 8px; align-self: flex-start; max-width: 85%; line-height: 1.4; }
+        .ai-msg { color: #00f2ff; background: rgba(0, 242, 255, 0.05); padding: 10px; border-radius: 8px; align-self: flex-start; max-width: 85%; }
         .user-msg { color: #fff; background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 8px; align-self: flex-end; max-width: 85%; opacity: 0.8; }
         .input-area { padding: 20px; border-top: 1px solid #222; display: flex; background: #080808; border-radius: 0 0 15px 15px; }
         input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 1rem; }
@@ -18,9 +18,9 @@
 </head>
 <body>
     <div id="chat-container">
-        <div class="header">LESIVA TERMINAL | ONLINE</div>
+        <div class="header">LESIVA TERMINAL | TBILISI</div>
         <div id="messages">
-            <div class="ai-msg"><b>AI:</b> Брат, серверный мост запущен! Теперь мы в эфире без блокировок. Проверяй! 🦾</div>
+            <div class="ai-msg"><b>AI:</b> Брат, мост настроен. Жду твой сигнал! 🦾</div>
         </div>
         <div class="input-area">
             <input type="text" id="userInput" placeholder="Напиши что-нибудь..." autocomplete="off">
@@ -29,7 +29,6 @@
     </div>
 
     <script>
-        // Твоя ссылка на Google Script уже здесь
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxD_-YClEzCaaPUDoWF1KTUXKY8dlQ43zKhqe6coSFwyS68BXpIch2woPLI4WHh8NZMTw/exec";
 
         const input = document.getElementById('userInput'), 
@@ -51,17 +50,20 @@
             try {
                 const response = await fetch(SCRIPT_URL, {
                     method: "POST",
-                    mode: "no-cors", // Используем no-cors для обхода блокировок браузера
                     body: JSON.stringify({text: text})
                 });
-
-                // Так как в no-cors мы не можем прочитать ответ напрямую, 
-                // нам нужно подождать пару секунд и вывести сообщение о проверке.
-                // Но твой скрипт в Google уже работает и обрабатывает данные!
                 
-                document.getElementById(loadingId).innerHTML = "<b>AI:</b> Сигнал отправлен через Google Bridge! Брат, если ответ не пришел сразу — значит Google еще прогревает скрипт. Напиши еще раз через 10 секунд!";
+                const data = await response.json();
+                document.getElementById(loadingId).remove();
+
+                if (data.candidates && data.candidates[0].content) {
+                    const reply = data.candidates[0].content.parts[0].text;
+                    msgs.innerHTML += `<div class="ai-msg"><b>AI:</b> ${reply}</div>`;
+                } else {
+                    msgs.innerHTML += `<div class="ai-msg"><b>AI:</b> Брат, ответ пришел, но он пустой. Попробуй еще раз.</div>`;
+                }
             } catch (e) {
-                document.getElementById(loadingId).innerHTML = "<b>AI:</b> Ошибка связи. Проверь статус скрипта!";
+                document.getElementById(loadingId).innerHTML = "<b>AI:</b> Ошибка моста. Проверь, опубликовал ли ты новую версию скрипта!";
             }
             msgs.scrollTop = msgs.scrollHeight;
         }
