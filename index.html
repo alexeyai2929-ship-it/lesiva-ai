@@ -3,72 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LESIVA | OFFICIAL TERMINAL</title>
+    <title>LESIVA | TERMINAL</title>
     <style>
         body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        #chat { width: 380px; height: 600px; border: 2px solid #00f2ff; background: #0a0a0a; border-radius: 15px; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(0, 242, 255, 0.2); }
-        .header { background: #00f2ff; color: #000; padding: 15px; text-align: center; font-weight: bold; font-size: 0.8rem; letter-spacing: 2px; border-radius: 12px 12px 0 0; text-transform: uppercase; }
-        #messages { flex: 1; padding: 20px; overflow-y: auto; font-size: 0.9rem; scrollbar-width: none; display: flex; flex-direction: column; gap: 12px; }
-        .ai { color: #00f2ff; background: rgba(0, 242, 255, 0.05); padding: 10px; border-radius: 8px; align-self: flex-start; max-width: 85%; line-height: 1.4; }
-        .user { color: #fff; background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 8px; align-self: flex-end; max-width: 85%; opacity: 0.8; }
-        .input-area { padding: 20px; border-top: 1px solid #222; display: flex; background: #080808; border-radius: 0 0 15px 15px; }
-        input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 1rem; }
+        #chat { width: 380px; height: 600px; border: 2px solid #00f2ff; background: #0a0a0a; border-radius: 15px; display: flex; flex-direction: column; }
+        .header { background: #00f2ff; color: #000; padding: 12px; text-align: center; font-weight: bold; border-radius: 12px 12px 0 0; }
+        #messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .ai { color: #00f2ff; background: rgba(0, 242, 255, 0.1); padding: 10px; border-radius: 8px; align-self: flex-start; }
+        .user { color: #fff; background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; align-self: flex-end; }
+        .input-box { padding: 20px; display: flex; border-top: 1px solid #222; }
+        input { flex: 1; background: transparent; border: none; color: #fff; outline: none; }
         button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 1.5rem; }
     </style>
 </head>
 <body>
     <div id="chat">
-        <div class="header">LESIVA TERMINAL | TBILISI</div>
-        <div id="messages">
-            <div class="ai"><b>AI:</b> Брат, я на связи. Наваливай базу! 🦾</div>
-        </div>
-        <div class="input-area">
-            <input type="text" id="userInput" placeholder="Напиши что-нибудь..." autocomplete="off">
-            <button id="sendBtn">➔</button>
+        <div class="header">LESIVA | FINAL TEST</div>
+        <div id="messages"><div class="ai"><b>AI:</b> Брат, я обновил ядро. Теперь точно заговорим! 🦾</div></div>
+        <div class="input-box">
+            <input type="text" id="msg" placeholder="Напиши что-нибудь..." autocomplete="off">
+            <button id="go">➔</button>
         </div>
     </div>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxD_-YClEzCaaPUDoWF1KTUXKY8dlQ43zKhqe6coSFwyS68BXpIch2woPLI4WHh8NZMTw/exec";
 
-        const input = document.getElementById('userInput'), msgs = document.getElementById('messages'), btn = document.getElementById('sendBtn');
-
-        async function talk() {
+        async function send() {
+            const input = document.getElementById('msg');
             const text = input.value.trim();
-            if (!text) return;
+            if(!text) return;
 
+            const msgs = document.getElementById('messages');
             msgs.innerHTML += `<div class="user"><b>YOU:</b> ${text}</div>`;
             input.value = '';
-            msgs.scrollTop = msgs.scrollHeight;
 
-            const loadingId = "L-" + Date.now();
-            msgs.innerHTML += `<div class="ai" id="${loadingId}"><b>AI:</b> На связи...</div>`;
+            const resDiv = document.createElement('div');
+            resDiv.className = 'ai';
+            resDiv.innerHTML = '<b>AI:</b> На связи...';
+            msgs.appendChild(resDiv);
             msgs.scrollTop = msgs.scrollHeight;
 
             try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: "POST",
-                    body: JSON.stringify({text: text})
-                });
-                
+                const response = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify({text: text}) });
                 const data = await response.json();
-                document.getElementById(loadingId).remove();
-
-                // Правильный разбор ответа от Gemini через Google Script
-                if (data && data.candidates && data.candidates[0].content) {
-                    const reply = data.candidates[0].content.parts[0].text;
-                    msgs.innerHTML += `<div class="ai"><b>AI:</b> ${reply}</div>`;
+                
+                if (data.candidates && data.candidates[0].content) {
+                    resDiv.innerHTML = `<b>AI:</b> ${data.candidates[0].content.parts[0].text}`;
+                } else if (data.error) {
+                    resDiv.innerHTML = `<b>AI:</b> Ошибка: ${JSON.stringify(data.error)}`;
                 } else {
-                    msgs.innerHTML += `<div class="ai"><b>AI:</b> Брат, сигнал дошел, но ответ пустой. Нажми еще раз через 5 сек!</div>`;
+                    resDiv.innerHTML = `<b>AI:</b> Брат, ответ пустой. Напиши еще раз, мост прогревается!`;
                 }
-            } catch (e) {
-                document.getElementById(loadingId).innerHTML = "<b>AI:</b> Ошибка моста. Проверь 'Новую версию' скрипта!";
+            } catch(e) {
+                resDiv.innerHTML = '<b>AI:</b> Ошибка. Скорее всего, ты не выбрал "Новую версию" в Google Script!';
             }
             msgs.scrollTop = msgs.scrollHeight;
         }
 
-        btn.onclick = talk;
-        input.onkeypress = (e) => { if(e.key === 'Enter') talk(); };
+        document.getElementById('go').onclick = send;
+        document.getElementById('msg').onkeypress = (e) => { if(e.key === 'Enter') send(); };
     </script>
 </body>
 </html>
