@@ -1,139 +1,115 @@
 <!DOCTYPE html>
-
 <html lang="ru">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>LESIVA PROJECT | GLOBAL</title>
-
     <style>
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; overflow: hidden; }
-
         .left-panel { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #1a1a1a; }
-
         .lesiva-logo { font-size: 10vw; font-weight: 900; color: #00f2ff; text-transform: uppercase; letter-spacing: 20px; text-shadow: 0 0 30px #00f2ff; }
-
         .sub-text { font-size: 14px; color: #555; text-transform: uppercase; letter-spacing: 10px; margin-top: 20px; }
-
-        .right-panel { width: 400px; background: #050505; display: flex; flex-direction: column; border-left: 1px solid #00f2ff33; }
-
+        .right-panel { width: 400px; background: #050505; display: flex; flex-direction: column; border-left: 1px solid #00f2ff33; position: relative; }
         .header { background: #00f2ff; color: #000; padding: 10px; text-align: center; font-weight: bold; font-size: 12px; letter-spacing: 3px; }
-
         #msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; scrollbar-width: none; }
-
         #msgs::-webkit-scrollbar { display: none; }
-
         .ai { color: #00f2ff; align-self: flex-start; max-width: 90%; line-height: 1.6; font-size: 14px; }
-
         .ai::before { content: 'AI: '; font-weight: bold; }
-
         .user { color: #fff; align-self: flex-end; max-width: 90%; font-family: monospace; font-size: 14px; }
-
         .user::before { content: '> '; color: #555; }
-
-        .in-box { padding: 15px; display: flex; border-top: 1px solid #1a1a1a; background: #080808; }
-
+        .in-box { padding: 15px; display: flex; border-top: 1px solid #1a1a1a; background: #080808; align-items: center; gap: 10px; }
         input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 14px; }
-
-        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 20px; transition: 0.3s; }
-
+        .btn-group { display: flex; gap: 15px; align-items: center; }
+        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 20px; transition: 0.3s; padding: 0 5px; }
         button:hover { transform: scale(1.2); }
-
+        .mic-active { color: #ff00ff !important; text-shadow: 0 0 10px #ff00ff; }
+        
+        @media (max-width: 900px) {
+            .left-panel { display: none; }
+            .right-panel { width: 100%; }
+        }
     </style>
-
 </head>
-
 <body>
-
     <div class="left-panel">
-
         <div class="lesiva-logo">LESIVA</div>
-
         <div class="sub-text">DIGITAL TWIN ONLINE</div>
-
     </div>
-
     <div class="right-panel">
-
         <div class="header">LESIVA TERMINAL</div>
-
         <div id="msgs">
-
             <div class="ai">Привет! О чем поболтаем? 🦾🎹</div>
-
         </div>
-
         <div class="in-box">
-
             <input type="text" id="m" placeholder="Введите команду..." autocomplete="off">
-
-            <button id="go">➔</button>
-
+            <div class="btn-group">
+                <button id="mic" title="Голосовой ввод">🎙️</button>
+                <button id="go">➔</button>
+            </div>
         </div>
-
     </div>
 
     <script>
+        let history = [];
+        const box = document.getElementById('msgs');
+        const input = document.getElementById('m');
 
-        const send = async () => {
-
-            const i = document.getElementById('m'), v = i.value.trim();
-
+        const send = async (textOverride = null) => {
+            const v = textOverride || input.value.trim();
             if(!v) return;
 
-            const box = document.getElementById('msgs');
-
-            box.innerHTML += '<div class="user">' + v + '</div>';
-
-            i.value = '';
-
+            const uDiv = document.createElement('div');
+            uDiv.className = 'user';
+            uDiv.innerText = v;
+            box.appendChild(uDiv);
+            
+            if(!textOverride) input.value = '';
             box.scrollTop = box.scrollHeight;
 
-            const res = document.createElement('div');
-
-            res.className = 'ai'; res.innerHTML = '<i>Считываю вайб...</i>';
-
-            box.appendChild(res);
+            const resDiv = document.createElement('div');
+            resDiv.className = 'ai';
+            resDiv.innerHTML = '<i>Считываю вайб...</i>';
+            box.appendChild(resDiv);
 
             try {
-
                 const r = await fetch('https://young-cake-650b.alexeyai2929.workers.dev', { 
-
                     method: 'POST', 
-
                     headers: {'Content-Type': 'application/json'}, 
-
-                    body: JSON.stringify({ text: v }) 
-
+                    body: JSON.stringify({ text: v, history: history }) 
                 });
-
                 const d = await r.json();
-
-                res.innerHTML = d.answer;
+                resDiv.innerHTML = d.answer;
+                
+                history.push({ role: 'user', content: v });
+                history.push({ role: 'assistant', content: d.answer });
+                if(history.length > 10) history = history.slice(-10);
 
             } catch(e) {
-
-                res.innerHTML = '<span style="color:red">Связь оборвана. Проверь Cloudflare, брат!</span>';
-
+                resDiv.innerHTML = '<span style="color:red">Связь оборвана. Проверь Cloudflare, брат!</span>';
             }
-
             box.scrollTop = box.scrollHeight;
-
         };
 
-        document.getElementById('go').onclick = send;
+        document.getElementById('go').onclick = () => send();
+        input.onkeypress = (e) => { if(e.key==='Enter') send(); };
 
-        document.getElementById('m').onkeypress = (e) => { if(e.key==='Enter') send(); };
-
+        // ГОЛОСОВОЙ ВВОД
+        const micBtn = document.getElementById('mic');
+        const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (Speech) {
+            const rec = new Speech();
+            rec.lang = 'ru-RU';
+            rec.onstart = () => micBtn.classList.add('mic-active');
+            rec.onend = () => micBtn.classList.remove('mic-active');
+            rec.onresult = (e) => {
+                const t = e.results[0][0].transcript;
+                send(t);
+            };
+            micBtn.onclick = () => rec.start();
+        } else {
+            micBtn.style.display = 'none';
+        }
     </script>
-
 </body>
-
-</html> 
+</html>
