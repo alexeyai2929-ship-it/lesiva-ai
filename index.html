@@ -133,14 +133,55 @@
             } catch(e) { resDiv.innerHTML = '<span style="color:red">Ошибка связи. Жми RESET.</span>'; }
         };
 
+        // --- УМНОЕ РАСПОЗНАВАНИЕ РЕЧИ ---
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
             const recognition = new SpeechRecognition();
             recognition.lang = 'ru-RU';
-            voiceBtn.onclick = () => { try { recognition.start(); voiceBtn.classList.add('active'); } catch(e) { recognition.stop(); } };
-            recognition.onresult = (e) => { input.value = e.results[0][0].transcript; send(); };
-            recognition.onend = () => voiceBtn.classList.remove('active');
-            recognition.onerror = () => voiceBtn.classList.remove('active');
+            recognition.continuous = true; 
+            recognition.interimResults = true;
+
+            let silenceTimer;
+            let isListening = false;
+
+            voiceBtn.onclick = () => { 
+                if (!isListening) {
+                    try { 
+                        recognition.start(); 
+                        isListening = true;
+                        voiceBtn.classList.add('active'); 
+                        input.placeholder = "Слушаю тебя, родной...";
+                    } catch(e) { recognition.stop(); }
+                } else {
+                    recognition.stop();
+                }
+            };
+
+            recognition.onresult = (e) => {
+                clearTimeout(silenceTimer); 
+                let resultText = '';
+                for (let i = e.resultIndex; i < e.results.length; i++) {
+                    resultText += e.results[i][0].transcript;
+                }
+                input.value = resultText;
+
+                // Ждем 2.5 секунды тишины перед отправкой
+                silenceTimer = setTimeout(() => {
+                    recognition.stop();
+                    send();
+                }, 2500); 
+            };
+
+            recognition.onend = () => {
+                isListening = false;
+                voiceBtn.classList.remove('active');
+                input.placeholder = "Напиши брату...";
+            };
+
+            recognition.onerror = () => {
+                isListening = false;
+                voiceBtn.classList.remove('active');
+            };
         }
 
         document.getElementById('clear-chat').onclick = () => {
