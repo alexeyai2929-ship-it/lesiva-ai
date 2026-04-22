@@ -14,16 +14,12 @@
             height: 100%;
             width: 100%;
             overflow: hidden;
-            position: fixed; /* Фикс для мобилок, чтобы не прыгало */
+            position: fixed;
         }
 
-        .wrapper {
-            display: flex;
-            height: 100%;
-            width: 100%;
-        }
+        .wrapper { display: flex; height: 100%; width: 100%; }
 
-        /* ЛЕВАЯ ПАНЕЛЬ (ЛОГО) */
+        /* ЛЕВАЯ ПАНЕЛЬ - ЛОГО */
         .left-panel { 
             flex: 1; 
             display: flex; 
@@ -45,7 +41,7 @@
             text-align: center;
         }
 
-        /* ПРАВАЯ ПАНЕЛЬ (ЧАТ) */
+        /* ПРАВАЯ ПАНЕЛЬ - ЧАТ */
         .right-panel { 
             flex: 1; 
             background: #050505; 
@@ -53,23 +49,14 @@
             flex-direction: column; 
             border-left: 1px solid #00f2ff22;
             height: 100%;
+            position: relative;
         }
 
-        /* АДАПТАЦИЯ ПОД МОБИЛКИ */
+        /* МОБИЛЬНАЯ АДАПТАЦИЯ */
         @media (max-width: 768px) {
             .wrapper { flex-direction: column; }
-            .left-panel { 
-                flex: none; 
-                height: 15vh; /* Минимум места под лого */
-                width: 100%; 
-                border-right: none; 
-                border-bottom: 1px solid #1a1a1a; 
-            }
-            .right-panel { 
-                flex: 1; 
-                height: 85vh; /* Остальное под чат */
-                width: 100%; 
-            }
+            .left-panel { flex: none; height: 18vh; width: 100%; border-right: none; border-bottom: 1px solid #1a1a1a; }
+            .right-panel { flex: 1; height: 82vh; width: 100%; }
             .lesiva-logo { font-size: 10vw; letter-spacing: 5px; }
         }
 
@@ -92,9 +79,9 @@
             padding: 2px 10px;
             font-size: 10px;
             cursor: pointer;
+            font-weight: bold;
         }
 
-        /* ОКНО СООБЩЕНИЙ */
         #msgs { 
             flex: 1; 
             padding: 20px; 
@@ -103,41 +90,50 @@
             flex-direction: column; 
             gap: 12px; 
             -webkit-overflow-scrolling: touch;
+            max-width: 900px; 
+            margin: 0 auto;
+            width: 100%;
         }
 
-        .ai { color: #00f2ff; align-self: flex-start; max-width: 90%; font-size: 14px; line-height: 1.5; }
-        .user { color: #fff; align-self: flex-end; max-width: 90%; background: #1a1a1a; padding: 8px 12px; border-radius: 8px; font-size: 14px; }
+        .ai { color: #00f2ff; align-self: flex-start; max-width: 90%; font-size: 15px; line-height: 1.5; }
+        .user { color: #fff; align-self: flex-end; max-width: 90%; background: #1a1a1a; padding: 10px 15px; border-radius: 10px; font-size: 14px; border: 1px solid #333; }
 
-        /* ИНПУТ - ГЛАВНЫЙ ФИКС */
+        /* ИНПУТ */
         .in-box { 
-            flex: none; /* Запрещаем сжиматься */
+            flex: none;
             padding: 15px; 
             display: flex; 
-            background: #0a0a0a; 
+            background: #000; 
             border-top: 1px solid #1a1a1a; 
             align-items: center;
+            justify-content: center;
+            padding-bottom: calc(15px + env(safe-area-inset-bottom));
+        }
+
+        .input-container {
+            max-width: 850px;
+            width: 100%;
+            display: flex;
+            background: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 5px 15px;
+            align-items: center;
             gap: 10px;
-            padding-bottom: calc(15px + env(safe-area-inset-bottom)); /* Для новых Айфонов */
         }
 
-        input { 
-            flex: 1; 
-            background: transparent; 
-            border: none; 
-            color: #fff; 
-            outline: none; 
-            font-size: 16px; /* 16px предотвращает авто-зум в iOS */
-            height: 40px;
-        }
+        input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 16px; height: 45px; }
 
-        .btn-group { display: flex; gap: 15px; }
-        .btn-group button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 22px; }
+        .btn-group { display: flex; gap: 15px; align-items: center; }
+        .btn-group button { background: transparent; border: none; color: #444; cursor: pointer; font-size: 24px; transition: 0.3s; }
         
-        /* ЦВЕТ МИКРОФОНА */
-        #mic { color: #333; transition: 0.3s; }
+        #go { color: #00f2ff !important; }
+
+        /* МИКРОФОН - ЦВЕТ ЛАЗУРЬ ПРИ НАЖАТИИ */
         #mic.active { 
-            color: #a0faff !important; 
-            filter: drop-shadow(0 0 10px rgba(160, 250, 255, 0.8)); 
+            color: #a0faff !important; /* Бледно-лазурный */
+            filter: drop-shadow(0 0 12px rgba(160, 250, 255, 0.9));
+            transform: scale(1.15);
         }
     </style>
 </head>
@@ -150,19 +146,21 @@
 
         <div class="right-panel">
             <div class="header">
-                <span>TERMINAL</span>
+                <span>LESIVA ENGINE v3.0</span>
                 <button class="reset-btn" onclick="resetChat()">Reset</button>
             </div>
             
             <div id="msgs">
-                <div class="ai">Всё сбалансировал, брат. И на ноуте, и на любой мобиле теперь всё чётко. Проверяй! 🦾</div>
+                <div class="ai">Микрофон настроен, брат. При нажатии он будет светиться бледно-лазурным. Проверяй! 🎙️</div>
             </div>
 
             <div class="in-box">
-                <input type="text" id="m" placeholder="Напиши что-нибудь..." autocomplete="off">
-                <div class="btn-group">
-                    <button id="mic">🎙️</button>
-                    <button id="go">➔</button>
+                <div class="input-container">
+                    <input type="text" id="m" placeholder="Введите команду..." autocomplete="off">
+                    <div class="btn-group">
+                        <button id="mic">🎙️</button>
+                        <button id="go">➔</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -174,7 +172,7 @@
 
         const resetChat = () => {
             history = [];
-            box.innerHTML = '<div class="ai">Память очищена, брат.</div>';
+            box.innerHTML = '<div class="ai">Память очищена. Я готов, брат.</div>';
         };
 
         const send = async (text = null) => {
@@ -184,10 +182,11 @@
             const u = document.createElement('div'); u.className = 'user'; u.innerText = val; box.appendChild(u);
             i.value = ''; box.scrollTop = box.scrollHeight;
 
-            const res = document.createElement('div'); res.className = 'ai'; res.innerHTML = '<i>...</i>'; box.appendChild(res);
+            const res = document.createElement('div'); res.className = 'ai'; res.innerHTML = '<i>Обработка...</i>'; box.appendChild(res);
             box.scrollTop = box.scrollHeight;
 
             try {
+                // НЕ ЗАБУДЬ ЗАМЕНИТЬ НА СВОЙ URL ВОРКЕРА
                 const r = await fetch('https://young-cake-650b.alexeyai2929.workers.dev', { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
@@ -197,7 +196,7 @@
                 res.innerHTML = d.answer;
                 history.push({role:'user', content:val}, {role:'assistant', content:d.answer});
                 if(history.length > 8) history = history.slice(-8);
-            } catch(e) { res.innerHTML = 'Ошибка сети, бро.'; }
+            } catch(e) { res.innerHTML = 'Бро, проверь связь. Движок не видит сеть.'; }
             box.scrollTop = box.scrollHeight;
         };
 
@@ -207,8 +206,8 @@
         const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
         if(Speech) {
             const rec = new Speech(); rec.lang = 'ru-RU';
-            rec.onstart = () => micBtn.classList.add('active');
-            rec.onend = () => micBtn.classList.remove('active');
+            rec.onstart = () => micBtn.classList.add('active'); // ВКЛЮЧАЕМ СВЕТ ПРИ НАЖАТИИ
+            rec.onend = () => micBtn.classList.remove('active'); // ВЫКЛЮЧАЕМ СВЕТ, КАК ДОСЛУШАЛ
             rec.onresult = (e) => send(e.results[0][0].transcript);
             micBtn.onclick = () => rec.start();
         }
