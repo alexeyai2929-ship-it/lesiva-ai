@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LESIVA PROJECT | UNIVERSAL</title>
+    <title>LESIVA PROJECT | GLOBAL ULTIMATE</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        /* Исправление высоты для мобильных */
         html, body { height: 100%; width: 100%; background: #000; color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; overflow: hidden; }
         
         body { display: flex; flex-direction: row; }
 
+        /* Левая панель для ПК */
         .left-panel { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #1a1a1a; }
         .lesiva-logo { font-size: 8vw; font-weight: 900; color: #00f2ff; text-transform: uppercase; letter-spacing: 15px; text-shadow: 0 0 25px #00f2ff; }
         .sub-text { font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 8px; margin-top: 15px; }
 
-        /* Панель чата - теперь на Flex */
+        /* Панель чата */
         .right-panel { width: 450px; background: #050505; display: flex; flex-direction: column; height: 100%; border-left: 1px solid #00f2ff33; }
         
         .header { background: #00f2ff; color: #000; padding: 12px; text-align: center; font-weight: bold; font-size: 11px; letter-spacing: 2px; position: relative; flex-shrink: 0; }
@@ -30,24 +30,30 @@
         .ai::before { content: 'AI: '; font-weight: bold; }
         .user { color: #fff; align-self: flex-end; max-width: 85%; font-family: monospace; font-size: 14px; opacity: 0.8; background: #111; padding: 8px 12px; border-radius: 10px 10px 0 10px; }
         
-        /* Футер ввода - жестко фиксируем высоту */
-        .in-box { height: 70px; padding: 10px 15px; display: flex; align-items: center; border-top: 1px solid #1a1a1a; background: #080808; flex-shrink: 0; }
+        /* Футер ввода */
+        .in-box { height: 70px; padding: 10px 15px; display: flex; align-items: center; border-top: 1px solid #1a1a1a; background: #080808; flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom); }
         
         input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 16px; height: 40px; }
         button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 24px; padding-left: 10px; }
         
-        #voice-btn { font-size: 20px; margin-right: 12px; cursor: pointer; filter: grayscale(1); opacity: 0.6; }
-        #voice-btn.active { filter: grayscale(0); transform: scale(1.2); opacity: 1; }
+        /* Оживший микрофон */
+        #voice-btn { font-size: 20px; margin-right: 12px; cursor: pointer; filter: grayscale(1); opacity: 0.6; transition: 0.3s; }
+        #voice-btn.active { 
+            filter: grayscale(0); 
+            transform: scale(1.3); 
+            opacity: 1; 
+            text-shadow: 0 0 15px #00f2ff, 0 0 30px #00f2ff; 
+        }
         
         .cursor { display: inline-block; width: 8px; height: 16px; background: #00f2ff; margin-left: 4px; animation: blink 0.7s infinite; }
         @keyframes blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
 
-        /* Адаптация под 6s и другие телефоны */
+        /* Адаптация под все мобилы */
         @media (max-width: 900px) {
             body { flex-direction: column; }
             .left-panel { display: none; }
             .right-panel { width: 100%; flex: 1; border-left: none; }
-            .in-box { height: 60px; } /* Чуть меньше для мобил */
+            .in-box { height: 65px; }
         }
     </style>
 </head>
@@ -63,7 +69,7 @@
         </div>
         <div id="msgs"></div>
         <div class="in-box">
-            <span id="voice-btn">🎤</span>
+            <span id="voice-btn" title="Нажми и говори">🎤</span>
             <input type="text" id="m" placeholder="Напиши брату..." autocomplete="off" enterkeyhint="send">
             <button id="go">➔</button>
         </div>
@@ -75,6 +81,7 @@
         const voiceBtn = document.getElementById('voice-btn');
         let chatHistory = JSON.parse(localStorage.getItem('lesiva_history')) || [];
 
+        // Стабильный Typewriter
         const typeWriter = (element, text, speed = 15) => {
             element.innerHTML = ''; 
             let i = 0;
@@ -133,6 +140,7 @@
             voiceBtn.onclick = () => { try { recognition.start(); voiceBtn.classList.add('active'); } catch(e) { recognition.stop(); } };
             recognition.onresult = (e) => { input.value = e.results[0][0].transcript; send(); };
             recognition.onend = () => voiceBtn.classList.remove('active');
+            recognition.onerror = () => voiceBtn.classList.remove('active');
         }
 
         document.getElementById('clear-chat').onclick = () => {
