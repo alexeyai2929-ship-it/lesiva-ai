@@ -2,77 +2,78 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>LESIVA PROJECT | GLOBAL</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* Сброс всех отступов */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        /* Главный контейнер на весь экран */
-        body { 
+        /* Умная высота для мобилок */
+        html, body { 
             background: #000; 
             color: #fff; 
-            font-family: 'Segoe UI', sans-serif; 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: row; 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            height: 100%;
+            width: 100%;
             overflow: hidden; 
+            position: fixed; /* Защита от лишних свайпов */
+        }
+
+        /* Главный контейнер */
+        .wrapper {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            width: 100%;
         }
 
         /* Адаптация под мобилки */
         @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .left-panel { min-height: 20vh !important; border-right: none !important; border-bottom: 1px solid #1a1a1a; }
-            .right-panel { width: 100% !important; height: 80vh !important; }
+            .wrapper { flex-direction: column; }
+            .left-panel { height: 15% !important; width: 100% !important; border-right: none !important; border-bottom: 1px solid #1a1a1a; }
+            .right-panel { height: 85% !important; width: 100% !important; }
+            .lesiva-logo { font-size: 10vw !important; letter-spacing: 5px !important; }
         }
 
         /* Левая панель (Лого) */
         .left-panel { 
-            flex: 1; 
+            width: 40%; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
             border-right: 1px solid #1a1a1a;
-            padding: 20px;
+            background: #000;
         }
 
         .lesiva-logo { 
-            font-size: 8vw; 
+            font-size: 5vw; 
             font-weight: 900; 
             color: #00f2ff; 
             text-transform: uppercase; 
-            letter-spacing: 15px; 
-            text-shadow: 0 0 20px #00f2ff; 
-            text-align: center;
+            letter-spacing: 10px; 
+            text-shadow: 0 0 15px #00f2ff; 
         }
 
-        .sub-text { 
-            font-size: 10px; 
-            color: #555; 
-            text-transform: uppercase; 
-            letter-spacing: 5px; 
-            margin-top: 10px;
-        }
-
-        /* Правая панель (Чат) */
+        /* Правая панель (Терминал) */
         .right-panel { 
-            width: 400px; 
+            flex: 1;
             background: #050505; 
             display: flex; 
             flex-direction: column; 
-            border-left: 1px solid #00f2ff33; 
+            position: relative;
         }
 
         .header { 
             background: #00f2ff; 
             color: #000; 
-            padding: 10px 15px; 
+            padding: 8px 15px; 
             display: flex; 
             justify-content: space-between; 
             align-items: center;
             font-weight: bold; 
             font-size: 11px; 
-            letter-spacing: 2px; 
+            text-transform: uppercase;
         }
 
         .reset-btn {
@@ -82,44 +83,32 @@
             padding: 2px 10px;
             font-size: 10px;
             cursor: pointer;
-            text-transform: uppercase;
             font-weight: bold;
         }
 
-        /* Поле с сообщениями — теперь оно гибкое */
+        /* Окно чата */
         #msgs { 
             flex: 1; 
-            padding: 20px; 
+            padding: 15px; 
             overflow-y: auto; 
             display: flex; 
             flex-direction: column; 
-            gap: 15px; 
-            scrollbar-width: none;
-        }
-        #msgs::-webkit-scrollbar { display: none; }
-
-        .ai { color: #00f2ff; align-self: flex-start; max-width: 90%; line-height: 1.6; font-size: 14px; }
-        .ai::before { content: 'AI: '; font-weight: bold; }
-        
-        .user { 
-            color: #fff; 
-            align-self: flex-end; 
-            max-width: 90%; 
-            background: rgba(255,255,255,0.05); 
-            padding: 8px; 
-            border-radius: 4px;
-            font-size: 14px;
+            gap: 12px; 
+            -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
         }
 
-        /* Нижний блок (Поле ввода) — зафиксирован внизу */
+        .ai { color: #00f2ff; align-self: flex-start; max-width: 90%; font-size: 14px; line-height: 1.4; }
+        .user { color: #fff; align-self: flex-end; max-width: 90%; background: #1a1a1a; padding: 8px 12px; border-radius: 8px; font-size: 14px; }
+
+        /* Блок ввода — ВСЕГДА ВНИЗУ */
         .in-box { 
-            padding: 15px; 
+            padding: 10px 15px; 
             display: flex; 
+            background: #0a0a0a; 
             border-top: 1px solid #1a1a1a; 
-            background: #080808; 
             align-items: center;
             gap: 10px;
-            padding-bottom: env(safe-area-inset-bottom, 15px); /* Для Айфонов с челкой */
+            padding-bottom: calc(10px + env(safe-area-inset-bottom)); /* Учет "челки" снизу */
         }
 
         input { 
@@ -128,35 +117,39 @@
             border: none; 
             color: #fff; 
             outline: none; 
-            font-size: 16px; 
+            font-size: 16px; /* 16px чтобы iPhone не зумил при вводе */
+            height: 40px;
         }
 
-        .btn-group { display: flex; gap: 15px; align-items: center; }
-        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 24px; }
+        .btn-group { display: flex; gap: 15px; }
+        .btn-group button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 20px; }
         
-        #mic.active { color: #ff0055; text-shadow: 0 0 10px #ff0055; }
+        #mic.active { color: #ff0055; transform: scale(1.2); transition: 0.3s; }
     </style>
 </head>
 <body>
 
-    <div class="left-panel">
-        <div class="lesiva-logo">LESIVA</div>
-        <div class="sub-text">DIGITAL TWIN</div>
-    </div>
+    <div class="wrapper">
+        <div class="left-panel">
+            <div class="lesiva-logo">LESIVA</div>
+        </div>
 
-    <div class="right-panel">
-        <div class="header">
-            <span>TERMINAL</span>
-            <button class="reset-btn" onclick="resetChat()">Reset</button>
-        </div>
-        <div id="msgs">
-            <div class="ai">Система на связи. Всё поправил, брат. Поле ввода на месте! 🦾</div>
-        </div>
-        <div class="in-box">
-            <input type="text" id="m" placeholder="Напиши что-нибудь..." autocomplete="off">
-            <div class="btn-group">
-                <button id="mic">🎙️</button>
-                <button id="go">➔</button>
+        <div class="right-panel">
+            <div class="header">
+                <span>Terminal</span>
+                <button class="reset-btn" onclick="resetChat()">Reset</button>
+            </div>
+            
+            <div id="msgs">
+                <div class="ai">Система активна. Проверяй, брат, теперь всё должно стоять ровно! 🦾</div>
+            </div>
+
+            <div class="in-box">
+                <input type="text" id="m" placeholder="Сообщение..." autocomplete="off">
+                <div class="btn-group">
+                    <button id="mic">🎙️</button>
+                    <button id="go">➔</button>
+                </div>
             </div>
         </div>
     </div>
@@ -167,25 +160,17 @@
 
         const resetChat = () => {
             history = [];
-            box.innerHTML = '<div class="ai">Память очищена, брат. Начинаем новый сет! 🦾</div>';
+            box.innerHTML = '<div class="ai">Память очищена, брат.</div>';
         };
 
         const send = async (text = null) => {
             const val = text || i.value.trim();
             if(!val) return;
 
-            const u = document.createElement('div');
-            u.className = 'user';
-            u.innerText = val;
-            box.appendChild(u);
-            
-            i.value = '';
-            box.scrollTop = box.scrollHeight;
+            const u = document.createElement('div'); u.className = 'user'; u.innerText = val; box.appendChild(u);
+            i.value = ''; box.scrollTop = box.scrollHeight;
 
-            const res = document.createElement('div');
-            res.className = 'ai';
-            res.innerHTML = '<i>Думаю...</i>';
-            box.appendChild(res);
+            const res = document.createElement('div'); res.className = 'ai'; res.innerHTML = '<i>...</i>'; box.appendChild(res);
             box.scrollTop = box.scrollHeight;
 
             try {
@@ -198,9 +183,7 @@
                 res.innerHTML = d.answer;
                 history.push({role:'user', content:val}, {role:'assistant', content:d.answer});
                 if(history.length > 8) history = history.slice(-8);
-            } catch(e) {
-                res.innerHTML = 'Ошибка связи, бро. Проверь интернет.';
-            }
+            } catch(e) { res.innerHTML = 'Ошибка сети.'; }
             box.scrollTop = box.scrollHeight;
         };
 
@@ -209,8 +192,7 @@
 
         const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
         if(Speech) {
-            const rec = new Speech();
-            rec.lang = 'ru-RU';
+            const rec = new Speech(); rec.lang = 'ru-RU';
             rec.onstart = () => micBtn.classList.add('active');
             rec.onend = () => micBtn.classList.remove('active');
             rec.onresult = (e) => send(e.results[0][0].transcript);
