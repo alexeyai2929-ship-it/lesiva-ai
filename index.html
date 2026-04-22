@@ -13,20 +13,26 @@
             font-family: 'Segoe UI', Roboto, sans-serif; 
             height: 100%;
             width: 100%;
-            overflow: hidden; 
+            overflow: hidden;
+            position: fixed; /* Фикс для мобилок, чтобы не прыгало */
         }
 
-        .wrapper { display: flex; height: 100vh; width: 100vw; }
+        .wrapper {
+            display: flex;
+            height: 100%;
+            width: 100%;
+        }
 
-        /* ЛЕВАЯ ПАНЕЛЬ */
+        /* ЛЕВАЯ ПАНЕЛЬ (ЛОГО) */
         .left-panel { 
-            flex: 1.2; 
+            flex: 1; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
             background: #000;
             border-right: 1px solid #111;
+            padding: 20px;
         }
 
         .lesiva-logo { 
@@ -35,91 +41,103 @@
             color: #00f2ff; 
             text-transform: uppercase; 
             letter-spacing: 15px; 
-            text-shadow: 0 0 30px rgba(0, 242, 255, 0.5); 
+            text-shadow: 0 0 30px rgba(0, 242, 255, 0.4); 
+            text-align: center;
         }
 
-        .sub-text {
-            color: #333;
-            letter-spacing: 10px;
-            font-size: 0.8vw;
-            margin-top: 10px;
-            text-transform: uppercase;
-        }
-
-        /* ПРАВАЯ ПАНЕЛЬ */
+        /* ПРАВАЯ ПАНЕЛЬ (ЧАТ) */
         .right-panel { 
-            flex: 0.8; 
-            min-width: 400px;
+            flex: 1; 
             background: #050505; 
             display: flex; 
             flex-direction: column; 
             border-left: 1px solid #00f2ff22;
+            height: 100%;
         }
 
-        @media (max-width: 1024px) {
+        /* АДАПТАЦИЯ ПОД МОБИЛКИ */
+        @media (max-width: 768px) {
             .wrapper { flex-direction: column; }
-            .left-panel { flex: none; height: 20%; width: 100%; border-right: none; border-bottom: 1px solid #1a1a1a; }
-            .right-panel { flex: 1; width: 100%; min-width: 100%; height: 80%; }
-            .lesiva-logo { font-size: 12vw; letter-spacing: 5px; }
-            .sub-text { display: none; }
+            .left-panel { 
+                flex: none; 
+                height: 15vh; /* Минимум места под лого */
+                width: 100%; 
+                border-right: none; 
+                border-bottom: 1px solid #1a1a1a; 
+            }
+            .right-panel { 
+                flex: 1; 
+                height: 85vh; /* Остальное под чат */
+                width: 100%; 
+            }
+            .lesiva-logo { font-size: 10vw; letter-spacing: 5px; }
         }
 
         .header { 
             background: #00f2ff; 
             color: #000; 
-            padding: 12px 20px; 
+            padding: 10px 15px; 
             display: flex; 
             justify-content: space-between; 
             align-items: center;
             font-weight: 900; 
             font-size: 11px; 
             text-transform: uppercase;
-            letter-spacing: 2px;
         }
 
         .reset-btn {
             background: #000;
             color: #00f2ff;
             border: 1px solid #000;
-            padding: 3px 12px;
+            padding: 2px 10px;
             font-size: 10px;
             cursor: pointer;
-            font-weight: bold;
         }
 
+        /* ОКНО СООБЩЕНИЙ */
         #msgs { 
             flex: 1; 
-            padding: 25px; 
+            padding: 20px; 
             overflow-y: auto; 
             display: flex; 
             flex-direction: column; 
-            gap: 15px; 
+            gap: 12px; 
+            -webkit-overflow-scrolling: touch;
         }
 
-        .ai { color: #00f2ff; align-self: flex-start; max-width: 85%; font-size: 15px; line-height: 1.5; }
-        .user { color: #fff; align-self: flex-end; max-width: 85%; background: #111; padding: 10px 15px; border-radius: 10px; font-size: 14px; border: 1px solid #222; }
+        .ai { color: #00f2ff; align-self: flex-start; max-width: 90%; font-size: 14px; line-height: 1.5; }
+        .user { color: #fff; align-self: flex-end; max-width: 90%; background: #1a1a1a; padding: 8px 12px; border-radius: 8px; font-size: 14px; }
 
+        /* ИНПУТ - ГЛАВНЫЙ ФИКС */
         .in-box { 
-            padding: 20px; 
+            flex: none; /* Запрещаем сжиматься */
+            padding: 15px; 
             display: flex; 
-            background: #000; 
+            background: #0a0a0a; 
             border-top: 1px solid #1a1a1a; 
             align-items: center;
-            gap: 15px;
-            padding-bottom: calc(20px + env(safe-area-inset-bottom));
+            gap: 10px;
+            padding-bottom: calc(15px + env(safe-area-inset-bottom)); /* Для новых Айфонов */
         }
 
-        input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 16px; height: 45px; }
+        input { 
+            flex: 1; 
+            background: transparent; 
+            border: none; 
+            color: #fff; 
+            outline: none; 
+            font-size: 16px; /* 16px предотвращает авто-зум в iOS */
+            height: 40px;
+        }
 
-        .btn-group { display: flex; gap: 20px; }
-        .btn-group button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 24px; }
+        .btn-group { display: flex; gap: 15px; }
+        .btn-group button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 22px; }
         
-        /* ЦВЕТ МИКРОФОНА: Бледно-лазурный при активации */
+        /* ЦВЕТ МИКРОФОНА */
         #mic { color: #333; transition: 0.3s; }
         #mic.active { 
             color: #a0faff !important; 
-            filter: drop-shadow(0 0 12px rgba(160, 250, 255, 0.8)); 
-            transform: scale(1.2); 
+            filter: drop-shadow(0 0 10px rgba(160, 250, 255, 0.8)); 
         }
     </style>
 </head>
@@ -128,21 +146,20 @@
     <div class="wrapper">
         <div class="left-panel">
             <div class="lesiva-logo">LESIVA</div>
-            <div class="sub-text">DIGITAL TWIN ONLINE</div>
         </div>
 
         <div class="right-panel">
             <div class="header">
-                <span>System Terminal</span>
+                <span>TERMINAL</span>
                 <button class="reset-btn" onclick="resetChat()">Reset</button>
             </div>
             
             <div id="msgs">
-                <div class="ai">Микрофон настроен, цвет — пушка. О чем сегодня делаем сет, брат? 🦾🎹</div>
+                <div class="ai">Всё сбалансировал, брат. И на ноуте, и на любой мобиле теперь всё чётко. Проверяй! 🦾</div>
             </div>
 
             <div class="in-box">
-                <input type="text" id="m" placeholder="Введите команду..." autocomplete="off">
+                <input type="text" id="m" placeholder="Напиши что-нибудь..." autocomplete="off">
                 <div class="btn-group">
                     <button id="mic">🎙️</button>
                     <button id="go">➔</button>
@@ -157,16 +174,19 @@
 
         const resetChat = () => {
             history = [];
-            box.innerHTML = '<div class="ai">Память очищена. Готов к работе!</div>';
+            box.innerHTML = '<div class="ai">Память очищена, брат.</div>';
         };
 
         const send = async (text = null) => {
             const val = text || i.value.trim();
             if(!val) return;
+
             const u = document.createElement('div'); u.className = 'user'; u.innerText = val; box.appendChild(u);
             i.value = ''; box.scrollTop = box.scrollHeight;
-            const res = document.createElement('div'); res.className = 'ai'; res.innerHTML = '<i>Обработка...</i>'; box.appendChild(res);
+
+            const res = document.createElement('div'); res.className = 'ai'; res.innerHTML = '<i>...</i>'; box.appendChild(res);
             box.scrollTop = box.scrollHeight;
+
             try {
                 const r = await fetch('https://young-cake-650b.alexeyai2929.workers.dev', { 
                     method: 'POST', 
@@ -177,7 +197,7 @@
                 res.innerHTML = d.answer;
                 history.push({role:'user', content:val}, {role:'assistant', content:d.answer});
                 if(history.length > 8) history = history.slice(-8);
-            } catch(e) { res.innerHTML = 'Ошибка связи.'; }
+            } catch(e) { res.innerHTML = 'Ошибка сети, бро.'; }
             box.scrollTop = box.scrollHeight;
         };
 
