@@ -19,6 +19,7 @@
 
         .wrapper { display: flex; height: 100%; width: 100%; }
 
+        /* ЛЕВАЯ ПАНЕЛЬ - ЛОГО */
         .left-panel { 
             flex: 1; 
             display: flex; 
@@ -40,6 +41,7 @@
             text-align: center;
         }
 
+        /* ПРАВАЯ ПАНЕЛЬ - ЧАТ */
         .right-panel { 
             flex: 1; 
             background: #050505; 
@@ -50,6 +52,7 @@
             position: relative;
         }
 
+        /* МОБИЛЬНАЯ АДАПТАЦИЯ */
         @media (max-width: 768px) {
             .wrapper { flex-direction: column; }
             .left-panel { flex: none; height: 18vh; width: 100%; border-right: none; border-bottom: 1px solid #1a1a1a; }
@@ -95,6 +98,7 @@
         .ai { color: #00f2ff; align-self: flex-start; max-width: 90%; font-size: 15px; line-height: 1.5; }
         .user { color: #fff; align-self: flex-end; max-width: 90%; background: #1a1a1a; padding: 10px 15px; border-radius: 10px; font-size: 14px; border: 1px solid #333; }
 
+        /* ИНПУТ */
         .in-box { 
             flex: none;
             padding: 15px; 
@@ -125,11 +129,12 @@
         
         #go { color: #00f2ff !important; }
 
-        /* МИКРОФОН - ЧИСТЫЙ ЛАЗУРНЫЙ ЦВЕТ ПРИ НАЖАТИИ */
+        /* МИКРОФОН - СВЕЧЕНИЕ КАК У ЛОГО */
         #mic.active { 
-            color: #00f2ff !important; /* Тот самый лазурный как лого */
-            filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.8));
-            transform: scale(1.15);
+            color: #00f2ff !important; 
+            text-shadow: 0 0 15px rgba(0, 242, 255, 0.8); /* Внутреннее свечение */
+            filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.6)); /* Внешний ореол */
+            transform: scale(1.1);
         }
     </style>
 </head>
@@ -142,17 +147,17 @@
 
         <div class="right-panel">
             <div class="header">
-                <span>LESIVA ENGINE v3.0</span>
+                <span>TERMINAL</span>
                 <button class="reset-btn" onclick="resetChat()">Reset</button>
             </div>
             
             <div id="msgs">
-                <div class="ai">Сделал ярко-лазурный свет для микрофона, брат. Теперь стиль — пушка! 🦾💎</div>
+                <div class="ai">Всё сбалансировал, брат. И на ноуте, и на любой мобиле теперь всё чётко. Проверяй! 🦾</div>
             </div>
 
             <div class="in-box">
                 <div class="input-container">
-                    <input type="text" id="m" placeholder="Введите команду..." autocomplete="off">
+                    <input type="text" id="m" placeholder="Напиши что-нибудь..." autocomplete="off">
                     <div class="btn-group">
                         <button id="mic">🎙️</button>
                         <button id="go">➔</button>
@@ -182,6 +187,7 @@
             box.scrollTop = box.scrollHeight;
 
             try {
+                // НЕ ЗАБУДЬ ЗАМЕНИТЬ НА СВОЙ URL ВОРКЕРА
                 const r = await fetch('https://young-cake-650b.alexeyai2929.workers.dev', { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
@@ -191,7 +197,7 @@
                 res.innerHTML = d.answer;
                 history.push({role:'user', content:val}, {role:'assistant', content:d.answer});
                 if(history.length > 8) history = history.slice(-8);
-            } catch(e) { res.innerHTML = 'Engine rebooting, brother. Stay with me! 🦾'; }
+            } catch(e) { res.innerHTML = 'Бро, проверь связь. Движок не видит сеть.'; }
             box.scrollTop = box.scrollHeight;
         };
 
@@ -201,8 +207,8 @@
         const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
         if(Speech) {
             const rec = new Speech(); rec.lang = 'ru-RU';
-            rec.onstart = () => micBtn.classList.add('active'); 
-            rec.onend = () => micBtn.classList.remove('active'); 
+            rec.onstart = () => micBtn.classList.add('active'); // ВКЛЮЧАЕМ НЕОН ПРИ НАЖАТИИ
+            rec.onend = () => micBtn.classList.remove('active'); // ВЫКЛЮЧАЕМ НЕОН, КАК ДОСЛУШАЛ
             rec.onresult = (e) => send(e.results[0][0].transcript);
             micBtn.onclick = () => rec.start();
         }
