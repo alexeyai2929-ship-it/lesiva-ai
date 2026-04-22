@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LESIVA PROJECT | GLOBAL</title>
+    <title>LESIVA PROJECT | GLOBAL MEMORY</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; overflow: hidden; }
@@ -11,7 +11,8 @@
         .lesiva-logo { font-size: 10vw; font-weight: 900; color: #00f2ff; text-transform: uppercase; letter-spacing: 20px; text-shadow: 0 0 30px #00f2ff; }
         .sub-text { font-size: 14px; color: #555; text-transform: uppercase; letter-spacing: 10px; margin-top: 20px; }
         .right-panel { width: 400px; background: #050505; display: flex; flex-direction: column; border-left: 1px solid #00f2ff33; }
-        .header { background: #00f2ff; color: #000; padding: 10px; text-align: center; font-weight: bold; font-size: 12px; letter-spacing: 3px; }
+        .header { background: #00f2ff; color: #000; padding: 10px; text-align: center; font-weight: bold; font-size: 12px; letter-spacing: 3px; position: relative; }
+        #clear-chat { position: absolute; right: 10px; cursor: pointer; color: #000; font-size: 10px; background: #fff; padding: 2px 5px; border-radius: 3px; }
         #msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; scrollbar-width: none; }
         #msgs::-webkit-scrollbar { display: none; }
         .ai { color: #00f2ff; align-self: flex-start; max-width: 90%; line-height: 1.6; font-size: 14px; }
@@ -30,41 +31,88 @@
         <div class="sub-text">DIGITAL TWIN ONLINE</div>
     </div>
     <div class="right-panel">
-        <div class="header">LESIVA TERMINAL</div>
-        <div id="msgs">
-            <div class="ai">Привет! О чем поболтаем? 🦾🎹</div>
+        <div class="header">
+            LESIVA TERMINAL
+            <span id="clear-chat" title="Очистить память">RESET</span>
         </div>
+        <div id="msgs"></div>
         <div class="in-box">
             <input type="text" id="m" placeholder="Введите команду..." autocomplete="off">
             <button id="go">➔</button>
         </div>
     </div>
+
     <script>
-        const send = async () => {
-            const i = document.getElementById('m'), v = i.value.trim();
-            if(!v) return;
-            const box = document.getElementById('msgs');
-            box.innerHTML += '<div class="user">' + v + '</div>';
-            i.value = '';
+        const box = document.getElementById('msgs');
+        const input = document.getElementById('m');
+        
+        // Загружаем историю из памяти браузера при входе
+        let chatHistory = JSON.parse(localStorage.getItem('lesiva_history')) || [];
+
+        const renderHistory = () => {
+            box.innerHTML = '<div class="ai">Привет! О чем поболтаем? 🦾🎹</div>';
+            chatHistory.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = msg.role === 'user' ? 'user' : 'ai';
+                div.innerHTML = msg.content;
+                box.appendChild(div);
+            });
             box.scrollTop = box.scrollHeight;
-            const res = document.createElement('div');
-            res.className = 'ai'; res.innerHTML = '<i>Считываю вайб...</i>';
-            box.appendChild(res);
+        };
+
+        const send = async () => {
+            const v = input.value.trim();
+            if(!v) return;
+
+            // Добавляем сообщение юзера в интерфейс и в память
+            box.innerHTML += '<div class="user">' + v + '</div>';
+            chatHistory.push({ role: 'user', content: v });
+            input.value = '';
+            box.scrollTop = box.scrollHeight;
+
+            const resDiv = document.createElement('div');
+            resDiv.className = 'ai'; resDiv.innerHTML = '<i>Считываю вайб...</i>';
+            box.appendChild(resDiv);
+
             try {
                 const r = await fetch('https://young-cake-650b.alexeyai2929.workers.dev', { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
-                    body: JSON.stringify({ text: v }) 
+                    body: JSON.stringify({ 
+                        text: v,
+                        history: chatHistory.slice(-10) // Отправляем последние 10 сообщений для контекста
+                    }) 
                 });
                 const d = await r.json();
-                res.innerHTML = d.answer;
+                resDiv.innerHTML = d.answer;
+                
+                // Добавляем ответ Лехи в память
+                chatHistory.push({ role: 'assistant', content: d.answer });
+                
+                // Лимит истории (храним последние 50 сообщений в браузере, чтобы не тормозило)
+                if (chatHistory.length > 50) chatHistory.shift();
+                localStorage.setItem('lesiva_history', JSON.stringify(chatHistory));
+
             } catch(e) {
-                res.innerHTML = '<span style="color:red">Связь оборвана. Проверь Cloudflare, брат!</span>';
+                resDiv.innerHTML = '<span style="color:red">Связь оборвана, бро!</span>';
             }
             box.scrollTop = box.scrollHeight;
         };
+
+        // Кнопка сброса памяти
+        document.getElementById('clear-chat').onclick = () => {
+            if(confirm('Брат, уверен, что хочешь всё забыть?')) {
+                localStorage.removeItem('lesiva_history');
+                chatHistory = [];
+                renderHistory();
+            }
+        };
+
         document.getElementById('go').onclick = send;
-        document.getElementById('m').onkeypress = (e) => { if(e.key==='Enter') send(); };
+        input.onkeypress = (e) => { if(e.key==='Enter') send(); };
+        
+        // Отрисовка при загрузке страницы
+        renderHistory();
     </script>
 </body>
 </html>
