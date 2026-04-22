@@ -2,45 +2,52 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LESIVA PROJECT | MOBILE ADAPTIVE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>LESIVA PROJECT | UNIVERSAL</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: #000; color: #fff; font-family: 'Segoe UI', Roboto, sans-serif; height: 100vh; display: flex; overflow: hidden; flex-direction: row; }
         
-        /* Логотип слева (для компов) */
-        .left-panel { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #1a1a1a; transition: 0.3s; }
-        .lesiva-logo { font-size: 8vw; font-weight: 900; color: #00f2ff; text-transform: uppercase; letter-spacing: 15px; text-shadow: 0 0 25px #00f2ff; text-align: center; }
-        .sub-text { font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 8px; margin-top: 15px; text-align: center; }
+        /* Исправление высоты для мобильных */
+        html, body { height: 100%; width: 100%; background: #000; color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; overflow: hidden; }
+        
+        body { display: flex; flex-direction: row; }
 
-        /* Панель чата */
-        .right-panel { width: 450px; background: #050505; display: flex; flex-direction: column; border-left: 1px solid #00f2ff33; position: relative; }
-        .header { background: #00f2ff; color: #000; padding: 12px; text-align: center; font-weight: bold; font-size: 11px; letter-spacing: 2px; z-index: 10; }
-        #clear-chat { position: absolute; right: 10px; top: 8px; cursor: pointer; color: #000; font-size: 10px; background: #fff; padding: 3px 8px; border-radius: 4px; font-weight: 900; }
+        .left-panel { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #1a1a1a; }
+        .lesiva-logo { font-size: 8vw; font-weight: 900; color: #00f2ff; text-transform: uppercase; letter-spacing: 15px; text-shadow: 0 0 25px #00f2ff; }
+        .sub-text { font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 8px; margin-top: 15px; }
 
-        #msgs { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; scrollbar-width: none; }
+        /* Панель чата - теперь на Flex */
+        .right-panel { width: 450px; background: #050505; display: flex; flex-direction: column; height: 100%; border-left: 1px solid #00f2ff33; }
+        
+        .header { background: #00f2ff; color: #000; padding: 12px; text-align: center; font-weight: bold; font-size: 11px; letter-spacing: 2px; position: relative; flex-shrink: 0; }
+        #clear-chat { position: absolute; right: 10px; top: 8px; cursor: pointer; color: #000; font-size: 9px; background: #fff; padding: 3px 8px; border-radius: 4px; font-weight: 900; }
+
+        /* Область сообщений */
+        #msgs { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; -webkit-overflow-scrolling: touch; }
         #msgs::-webkit-scrollbar { display: none; }
 
-        .ai { color: #00f2ff; align-self: flex-start; max-width: 95%; line-height: 1.5; font-size: 15px; word-wrap: break-word; }
+        .ai { color: #00f2ff; align-self: flex-start; max-width: 95%; line-height: 1.5; font-size: 15px; }
         .ai::before { content: 'AI: '; font-weight: bold; }
         .user { color: #fff; align-self: flex-end; max-width: 85%; font-family: monospace; font-size: 14px; opacity: 0.8; background: #111; padding: 8px 12px; border-radius: 10px 10px 0 10px; }
         
-        .in-box { padding: 15px; display: flex; align-items: center; border-top: 1px solid #1a1a1a; background: #080808; padding-bottom: calc(15px + env(safe-area-inset-bottom)); }
-        input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 16px; /* 16px чтобы айфон не зумил при вводе */ }
-        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 24px; padding-left: 12px; }
+        /* Футер ввода - жестко фиксируем высоту */
+        .in-box { height: 70px; padding: 10px 15px; display: flex; align-items: center; border-top: 1px solid #1a1a1a; background: #080808; flex-shrink: 0; }
         
-        #voice-btn { font-size: 22px; margin-right: 15px; cursor: pointer; filter: grayscale(1); opacity: 0.6; }
-        #voice-btn.active { filter: grayscale(0); transform: scale(1.2); text-shadow: 0 0 10px #00f2ff; opacity: 1; }
-        .cursor { display: inline-block; width: 8px; height: 16px; background: #00f2ff; margin-left: 4px; animation: blink 0.7s infinite; vertical-align: middle; }
+        input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 16px; height: 40px; }
+        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 24px; padding-left: 10px; }
+        
+        #voice-btn { font-size: 20px; margin-right: 12px; cursor: pointer; filter: grayscale(1); opacity: 0.6; }
+        #voice-btn.active { filter: grayscale(0); transform: scale(1.2); opacity: 1; }
+        
+        .cursor { display: inline-block; width: 8px; height: 16px; background: #00f2ff; margin-left: 4px; animation: blink 0.7s infinite; }
         @keyframes blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
 
-        /* АДАПТАЦИЯ ПОД ТЕЛЕФОНЫ */
+        /* Адаптация под 6s и другие телефоны */
         @media (max-width: 900px) {
             body { flex-direction: column; }
-            .left-panel { display: none; } /* Скрываем огромное лого на мобиле, чтобы не мешало чату */
-            .right-panel { width: 100%; height: 100vh; border-left: none; }
-            .lesiva-logo { font-size: 12vw; letter-spacing: 5px; }
-            .ai { font-size: 14px; }
+            .left-panel { display: none; }
+            .right-panel { width: 100%; flex: 1; border-left: none; }
+            .in-box { height: 60px; } /* Чуть меньше для мобил */
         }
     </style>
 </head>
@@ -57,7 +64,7 @@
         <div id="msgs"></div>
         <div class="in-box">
             <span id="voice-btn">🎤</span>
-            <input type="text" id="m" placeholder="Напиши брату..." autocomplete="off">
+            <input type="text" id="m" placeholder="Напиши брату..." autocomplete="off" enterkeyhint="send">
             <button id="go">➔</button>
         </div>
     </div>
