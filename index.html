@@ -6,19 +6,20 @@
     <title>LESIVA PROJECT | GLOBAL</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body { 
             background: #000; 
             color: #fff; 
             font-family: 'Segoe UI', sans-serif; 
             height: 100vh; 
             display: flex; 
-            flex-direction: row; /* По умолчанию для ПК */
+            flex-direction: row; 
             overflow: hidden; 
         }
 
-        /* Адаптивность контейнера */
+        /* Адаптивность для мобилок */
         @media (max-width: 768px) {
-            body { flex-direction: column; overflow-y: auto; }
+            body { flex-direction: column; overflow: hidden; }
         }
 
         /* Левая панель / Верхняя на мобиле */
@@ -43,7 +44,14 @@
             text-align: center;
         }
 
-        .sub-text { font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 5px; margin-top: 10px; text-align: center;}
+        .sub-text { 
+            font-size: 12px; 
+            color: #555; 
+            text-transform: uppercase; 
+            letter-spacing: 5px; 
+            margin-top: 10px; 
+            text-align: center;
+        }
 
         /* Правая панель (Чат) */
         .right-panel { 
@@ -58,6 +66,7 @@
         @media (max-width: 768px) {
             .right-panel { 
                 width: 100%; 
+                flex: 1; /* Чтобы чат занимал всё свободное место */
                 height: 70vh; 
                 border-left: none; 
                 border-top: 2px solid #00f2ff33; 
@@ -65,7 +74,16 @@
             .lesiva-logo { font-size: 15vw; letter-spacing: 5px; }
         }
 
-        .header { background: #00f2ff; color: #000; padding: 10px; text-align: center; font-weight: bold; font-size: 12px; letter-spacing: 3px; }
+        .header { 
+            background: #00f2ff; 
+            color: #000; 
+            padding: 10px; 
+            text-align: center; 
+            font-weight: bold; 
+            font-size: 12px; 
+            letter-spacing: 3px; 
+            text-transform: uppercase;
+        }
 
         #msgs { 
             flex: 1; 
@@ -74,11 +92,25 @@
             display: flex; 
             flex-direction: column; 
             gap: 15px; 
+            scrollbar-width: none;
         }
+
+        #msgs::-webkit-scrollbar { display: none; }
 
         .ai { color: #00f2ff; align-self: flex-start; max-width: 90%; line-height: 1.6; font-size: 14px; }
         .ai::before { content: 'AI: '; font-weight: bold; }
-        .user { color: #fff; align-self: flex-end; max-width: 90%; font-family: monospace; font-size: 14px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 4px;}
+        
+        .user { 
+            color: #fff; 
+            align-self: flex-end; 
+            max-width: 90%; 
+            font-family: monospace; 
+            font-size: 14px; 
+            background: rgba(255,255,255,0.05); 
+            padding: 8px; 
+            border-radius: 4px;
+        }
+        .user::before { content: '> '; color: #555; }
 
         /* Поле ввода */
         .in-box { 
@@ -88,7 +120,7 @@
             background: #080808; 
             align-items: center;
             gap: 10px;
-            padding-bottom: env(safe-area-inset-bottom, 15px); /* Для новых айфонов */
+            padding-bottom: env(safe-area-inset-bottom, 15px);
         }
 
         input { 
@@ -97,7 +129,7 @@
             border: none; 
             color: #fff; 
             outline: none; 
-            font-size: 16px; /* 16px чтобы iOS не зумил при вводе */
+            font-size: 16px; /* Фикс зума на iOS */
         }
 
         .btn-group { display: flex; gap: 15px; align-items: center; }
@@ -111,9 +143,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
         }
 
-        #mic.active { color: #ff00ff; text-shadow: 0 0 10px #ff00ff; transform: scale(1.2); }
+        /* Стиль микрофона: в покое - серый, при нажатии - бледно-лазурный неон */
+        #mic { color: #555; }
+        #mic.active { 
+            color: #a0faff !important; 
+            text-shadow: 0 0 15px rgba(0, 242, 255, 0.7); 
+            transform: scale(1.2); 
+        }
+
+        button:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
@@ -131,7 +172,7 @@
         <div class="in-box">
             <input type="text" id="m" placeholder="Введите команду..." autocomplete="off">
             <div class="btn-group">
-                <button id="mic">🎙️</button>
+                <button id="mic" title="Голосовой ввод">🎙️</button>
                 <button id="go">➔</button>
             </div>
         </div>
@@ -147,17 +188,21 @@
             const val = text || i.value.trim();
             if(!val) return;
 
+            // Отображаем сообщение юзера
             const u = document.createElement('div');
             u.className = 'user';
             u.innerText = val;
             box.appendChild(u);
+            
             i.value = '';
             box.scrollTop = box.scrollHeight;
 
+            // Временный ответ "Считываю вайб..."
             const res = document.createElement('div');
             res.className = 'ai';
             res.innerHTML = '<i>Считываю вайб...</i>';
             box.appendChild(res);
+            box.scrollTop = box.scrollHeight;
 
             try {
                 const r = await fetch('https://young-cake-650b.alexeyai2929.workers.dev', { 
@@ -166,30 +211,48 @@
                     body: JSON.stringify({ text: val, history: history }) 
                 });
                 const d = await r.json();
+                
+                // Заменяем текст на реальный ответ
                 res.innerHTML = d.answer;
                 
+                // Обновляем историю (храним последние 8 реплик)
                 history.push({role:'user', content:val}, {role:'assistant', content:d.answer});
                 if(history.length > 8) history = history.slice(-8);
             } catch(e) {
-                res.innerHTML = 'Связь потеряна, брат.';
+                res.innerHTML = '<span style="color:#ff4b4b">Связь потеряна, брат. Проверь сеть.</span>';
             }
             box.scrollTop = box.scrollHeight;
         };
 
+        // Клик по кнопке отправки
         document.getElementById('go').onclick = () => send();
+        
+        // Enter в поле ввода
         i.onkeypress = (e) => { if(e.key==='Enter') send(); };
 
-        // Голос
+        // Логика Голосового ввода (Микрофон)
         const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
         if(Speech) {
             const rec = new Speech();
             rec.lang = 'ru-RU';
+            
             rec.onstart = () => micBtn.classList.add('active');
             rec.onend = () => micBtn.classList.remove('active');
-            rec.onresult = (e) => send(e.results[0][0].transcript);
-            micBtn.onclick = () => rec.start();
+            
+            rec.onresult = (e) => {
+                const transcript = e.results[0][0].transcript;
+                send(transcript);
+            };
+
+            micBtn.onclick = () => {
+                try {
+                    rec.start();
+                } catch(err) {
+                    console.log("Уже слушаю, брат");
+                }
+            };
         } else {
-            micBtn.style.opacity = '0.3';
+            micBtn.style.display = 'none';
         }
     </script>
 </body>
