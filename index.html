@@ -6,18 +6,63 @@
     <title>LESIVA PROJECT | GLOBAL</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; overflow: hidden; }
+        
+        /* Главный контейнер на весь экран */
+        body { 
+            background: #000; 
+            color: #fff; 
+            font-family: 'Segoe UI', sans-serif; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: row; 
+            overflow: hidden; 
+        }
 
-        @media (max-width: 768px) { body { flex-direction: column; } }
+        /* Адаптация под мобилки */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .left-panel { min-height: 20vh !important; border-right: none !important; border-bottom: 1px solid #1a1a1a; }
+            .right-panel { width: 100% !important; height: 80vh !important; }
+        }
 
-        .left-panel { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #1a1a1a; padding: 20px; min-height: 30vh; }
-        .lesiva-logo { font-size: 8vw; font-weight: 900; color: #00f2ff; text-transform: uppercase; letter-spacing: 15px; text-shadow: 0 0 20px #00f2ff; text-align: center; }
-        .sub-text { font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 5px; margin-top: 10px; text-align: center;}
+        /* Левая панель (Лого) */
+        .left-panel { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            border-right: 1px solid #1a1a1a;
+            padding: 20px;
+        }
 
-        .right-panel { width: 400px; background: #050505; display: flex; flex-direction: column; border-left: 1px solid #00f2ff33; height: 100vh; }
-        @media (max-width: 768px) { .right-panel { width: 100%; flex: 1; height: 70vh; border-left: none; border-top: 2px solid #00f2ff33; } .lesiva-logo { font-size: 15vw; } }
+        .lesiva-logo { 
+            font-size: 8vw; 
+            font-weight: 900; 
+            color: #00f2ff; 
+            text-transform: uppercase; 
+            letter-spacing: 15px; 
+            text-shadow: 0 0 20px #00f2ff; 
+            text-align: center;
+        }
 
-        /* Хедер с кнопкой RESET */
+        .sub-text { 
+            font-size: 10px; 
+            color: #555; 
+            text-transform: uppercase; 
+            letter-spacing: 5px; 
+            margin-top: 10px;
+        }
+
+        /* Правая панель (Чат) */
+        .right-panel { 
+            width: 400px; 
+            background: #050505; 
+            display: flex; 
+            flex-direction: column; 
+            border-left: 1px solid #00f2ff33; 
+        }
+
         .header { 
             background: #00f2ff; 
             color: #000; 
@@ -26,7 +71,7 @@
             justify-content: space-between; 
             align-items: center;
             font-weight: bold; 
-            font-size: 12px; 
+            font-size: 11px; 
             letter-spacing: 2px; 
         }
 
@@ -34,80 +79,138 @@
             background: #000;
             color: #00f2ff;
             border: 1px solid #000;
-            padding: 2px 8px;
+            padding: 2px 10px;
             font-size: 10px;
             cursor: pointer;
             text-transform: uppercase;
-            transition: all 0.3s;
+            font-weight: bold;
         }
-        .reset-btn:hover { background: #ff0055; color: #fff; border-color: #ff0055; }
 
-        #msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; scrollbar-width: none; }
+        /* Поле с сообщениями — теперь оно гибкое */
+        #msgs { 
+            flex: 1; 
+            padding: 20px; 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px; 
+            scrollbar-width: none;
+        }
         #msgs::-webkit-scrollbar { display: none; }
 
         .ai { color: #00f2ff; align-self: flex-start; max-width: 90%; line-height: 1.6; font-size: 14px; }
         .ai::before { content: 'AI: '; font-weight: bold; }
-        .user { color: #fff; align-self: flex-end; max-width: 90%; font-family: monospace; font-size: 14px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 4px; }
-        .user::before { content: '> '; color: #555; }
+        
+        .user { 
+            color: #fff; 
+            align-self: flex-end; 
+            max-width: 90%; 
+            background: rgba(255,255,255,0.05); 
+            padding: 8px; 
+            border-radius: 4px;
+            font-size: 14px;
+        }
 
-        .in-box { padding: 15px; display: flex; border-top: 1px solid #1a1a1a; background: #080808; align-items: center; gap: 10px; padding-bottom: env(safe-area-inset-bottom, 15px); }
-        input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 16px; }
-        
+        /* Нижний блок (Поле ввода) — зафиксирован внизу */
+        .in-box { 
+            padding: 15px; 
+            display: flex; 
+            border-top: 1px solid #1a1a1a; 
+            background: #080808; 
+            align-items: center;
+            gap: 10px;
+            padding-bottom: env(safe-area-inset-bottom, 15px); /* Для Айфонов с челкой */
+        }
+
+        input { 
+            flex: 1; 
+            background: transparent; 
+            border: none; 
+            color: #fff; 
+            outline: none; 
+            font-size: 16px; 
+        }
+
         .btn-group { display: flex; gap: 15px; align-items: center; }
-        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 24px; transition: all 0.3s ease; }
+        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 24px; }
         
-        #mic { color: #555; }
-        #mic.active { color: #a0faff !important; text-shadow: 0 0 15px rgba(0, 242, 255, 0.7); transform: scale(1.2); }
+        #mic.active { color: #ff0055; text-shadow: 0 0 10px #ff0055; }
     </style>
 </head>
 <body>
-    <div class="left-panel"><div class="lesiva-logo">LESIVA</div><div class="sub-text">DIGITAL TWIN ONLINE</div></div>
+
+    <div class="left-panel">
+        <div class="lesiva-logo">LESIVA</div>
+        <div class="sub-text">DIGITAL TWIN</div>
+    </div>
+
     <div class="right-panel">
         <div class="header">
-            <span>LESIVA TERMINAL</span>
+            <span>TERMINAL</span>
             <button class="reset-btn" onclick="resetChat()">Reset</button>
         </div>
-        <div id="msgs"><div class="ai">Система готова. О чем поболтаем, брат? 🦾🎹</div></div>
+        <div id="msgs">
+            <div class="ai">Система на связи. Всё поправил, брат. Поле ввода на месте! 🦾</div>
+        </div>
         <div class="in-box">
-            <input type="text" id="m" placeholder="Введите команду..." autocomplete="off">
-            <div class="btn-group"><button id="mic">🎙️</button><button id="go">➔</button></div>
+            <input type="text" id="m" placeholder="Напиши что-нибудь..." autocomplete="off">
+            <div class="btn-group">
+                <button id="mic">🎙️</button>
+                <button id="go">➔</button>
+            </div>
         </div>
     </div>
+
     <script>
         let history = [];
         const box = document.getElementById('msgs'), i = document.getElementById('m'), micBtn = document.getElementById('mic');
 
-        // Функция очистки
         const resetChat = () => {
-            history = []; // Очищаем память
-            box.innerHTML = '<div class="ai">История стерта. Я готов к новому сету, брат! 🦾🎹</div>'; // Чистим экран
+            history = [];
+            box.innerHTML = '<div class="ai">Память очищена, брат. Начинаем новый сет! 🦾</div>';
         };
 
         const send = async (text = null) => {
             const val = text || i.value.trim();
             if(!val) return;
-            const u = document.createElement('div'); u.className = 'user'; u.innerText = val; box.appendChild(u);
-            i.value = ''; box.scrollTop = box.scrollHeight;
-            const res = document.createElement('div'); res.className = 'ai'; res.innerHTML = '<i>Считываю вайб...</i>'; box.appendChild(res);
+
+            const u = document.createElement('div');
+            u.className = 'user';
+            u.innerText = val;
+            box.appendChild(u);
+            
+            i.value = '';
             box.scrollTop = box.scrollHeight;
+
+            const res = document.createElement('div');
+            res.className = 'ai';
+            res.innerHTML = '<i>Думаю...</i>';
+            box.appendChild(res);
+            box.scrollTop = box.scrollHeight;
+
             try {
                 const r = await fetch('https://young-cake-650b.alexeyai2929.workers.dev', { 
-                    method: 'POST', headers: {'Content-Type': 'application/json'}, 
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'}, 
                     body: JSON.stringify({ text: val, history: history }) 
                 });
                 const d = await r.json();
                 res.innerHTML = d.answer;
                 history.push({role:'user', content:val}, {role:'assistant', content:d.answer});
                 if(history.length > 8) history = history.slice(-8);
-            } catch(e) { res.innerHTML = 'Связь потеряна, брат.'; }
+            } catch(e) {
+                res.innerHTML = 'Ошибка связи, бро. Проверь интернет.';
+            }
             box.scrollTop = box.scrollHeight;
         };
 
         document.getElementById('go').onclick = () => send();
         i.onkeypress = (e) => { if(e.key==='Enter') send(); };
+
         const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
         if(Speech) {
-            const rec = new Speech(); rec.lang = 'ru-RU';
+            const rec = new Speech();
+            rec.lang = 'ru-RU';
             rec.onstart = () => micBtn.classList.add('active');
             rec.onend = () => micBtn.classList.remove('active');
             rec.onresult = (e) => send(e.results[0][0].transcript);
