@@ -2,51 +2,51 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>LESIVA PROJECT | GLOBAL</title>
+    <title>LESIVA PROJECT</title>
     <style>
         body, html { margin: 0; padding: 0; height: 100%; background: #000; color: #00f2ff; font-family: sans-serif; overflow: hidden; }
         .container { display: flex; height: 100vh; }
-        .visual-side { flex: 1.5; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, #0a0a0a 0%, #000 100%); }
-        .logo-main { font-size: 80px; font-weight: 900; letter-spacing: 15px; text-shadow: 0 0 20px #00f2ff; text-transform: uppercase; }
-        .terminal-side { flex: 1; background: #050505; border-left: 2px solid #00f2ff; display: flex; flex-direction: column; }
-        #output { flex: 1; padding: 20px; overflow-y: auto; font-family: monospace; }
-        .input-area { padding: 15px; border-top: 1px solid #222; display: flex; }
-        input { background: transparent; border: none; color: #fff; flex: 1; outline: none; font-size: 16px; font-family: monospace; }
+        .visual { flex: 1.5; display: flex; align-items: center; justify-content: center; background: radial-gradient(#111, #000); }
+        .logo { font-size: 80px; font-weight: 900; text-shadow: 0 0 20px #00f2ff; text-align: center; }
+        .terminal { flex: 1; border-left: 2px solid #00f2ff; display: flex; flex-direction: column; background: #050505; }
+        #chat { flex: 1; padding: 20px; overflow-y: auto; font-family: monospace; font-size: 14px; }
+        .input-box { padding: 15px; border-top: 1px solid #222; display: flex; }
+        input { background: none; border: none; color: #fff; flex: 1; outline: none; font-family: monospace; font-size: 16px; }
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="visual-side"><div class="logo-main">LESIVA</div></div>
-    <div class="terminal-side">
-        <div id="output"></div>
-        <div class="input-area">
-            <span style="color:#00f2ff; margin-right:10px;">></span>
-            <input type="text" id="user-input" placeholder="На связи..." autofocus autocomplete="off">
+    <div class="visual"><div class="logo">LESIVA<br><span style="font-size:14px;opacity:0.5;letter-spacing:5px;">DIGITAL TWIN</span></div></div>
+    <div class="terminal">
+        <div style="background:#00f2ff;color:#000;padding:5px;text-align:center;font-weight:bold;">TERMINAL v2.0</div>
+        <div id="chat"></div>
+        <div class="input-box">
+            <span style="color:#00f2ff;margin-right:10px;">></span>
+            <input type="text" id="in" placeholder="На связи..." autofocus autocomplete="off">
         </div>
     </div>
 </div>
 <script>
-    const output = document.getElementById('output');
-    const input = document.getElementById('user-input');
-    output.innerHTML = '<div style="color:#00f2ff">AI: Система готова. Лёша в сети. Тбилиси на связи.</div>';
+    const chat = document.getElementById('chat');
+    const input = document.getElementById('in');
+    chat.innerHTML = '<div>AI: Система готова. Лёша в сети. Тбилиси на связи.</div>';
 
     input.addEventListener('keydown', async (e) => {
-        if (e.key === 'Enter' && input.value.trim()) {
+        if (e.key === 'Enter' && input.value) {
             const val = input.value;
             input.value = '';
-            output.innerHTML += `<div style="color:#ff00ff; margin-top:10px;">> ${val}</div>`;
+            chat.innerHTML += `<div style="color:#ff00ff;margin-top:10px;">> ${val}</div>`;
             try {
-                const res = await fetch('https://young-cake-650b.lesiva-ai.workers.dev', {
+                const r = await fetch('https://young-cake-650b.lesiva-ai.workers.dev', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: val })
                 });
-                const data = await res.json();
-                output.innerHTML += `<div style="color:#00f2ff; margin-top:5px;">AI: ${data.response}</div>`;
-            } catch (err) {
-                output.innerHTML += `<div style="color:red; margin-top:5px;">AI: Ошибка связи!</div>`;
+                const d = await r.json();
+                chat.innerHTML += `<div style="color:#00f2ff;margin-top:5px;">AI: ${d.response}</div>`;
+            } catch {
+                chat.innerHTML += `<div style="color:red;margin-top:5px;">AI: Ошибка связи!</div>`;
             }
-            output.scrollTop = output.scrollHeight;
+            chat.scrollTop = chat.scrollHeight;
         }
     });
 </script>
