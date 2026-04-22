@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LESIVA PROJECT | TERMINAL REALISM</title>
+    <title>LESIVA PROJECT | GLOBAL ULTIMATE</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; overflow: hidden; }
@@ -11,24 +11,22 @@
         .lesiva-logo { font-size: 10vw; font-weight: 900; color: #00f2ff; text-transform: uppercase; letter-spacing: 20px; text-shadow: 0 0 30px #00f2ff; }
         .sub-text { font-size: 14px; color: #555; text-transform: uppercase; letter-spacing: 10px; margin-top: 20px; }
         .right-panel { width: 400px; background: #050505; display: flex; flex-direction: column; border-left: 1px solid #00f2ff33; }
-        .header { background: #00f2ff; color: #000; padding: 10px; text-align: center; font-weight: bold; font-size: 12px; letter-spacing: 3px; position: relative; }
-        #clear-chat { position: absolute; right: 10px; cursor: pointer; color: #000; font-size: 10px; background: #fff; padding: 2px 5px; border-radius: 3px; }
-        #msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; scrollbar-width: none; }
+        .header { background: #00f2ff; color: #000; padding: 10px; text-align: center; font-weight: bold; font-size: 11px; letter-spacing: 3px; position: relative; }
+        #clear-chat { position: absolute; right: 10px; cursor: pointer; color: #000; font-size: 9px; background: #fff; padding: 2px 6px; border-radius: 3px; font-weight: 900; }
+        #msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; scrollbar-width: none; -ms-overflow-style: none; }
         #msgs::-webkit-scrollbar { display: none; }
-        .ai { color: #00f2ff; align-self: flex-start; max-width: 90%; line-height: 1.6; font-size: 14px; }
+        .ai { color: #00f2ff; align-self: flex-start; max-width: 95%; line-height: 1.6; font-size: 14px; position: relative; }
         .ai::before { content: 'AI: '; font-weight: bold; }
-        .user { color: #fff; align-self: flex-end; max-width: 90%; font-family: monospace; font-size: 14px; }
+        .user { color: #fff; align-self: flex-end; max-width: 90%; font-family: monospace; font-size: 14px; opacity: 0.8; }
         .user::before { content: '> '; color: #555; }
         .in-box { padding: 15px; display: flex; align-items: center; border-top: 1px solid #1a1a1a; background: #080808; }
         input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 14px; }
-        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 20px; transition: 0.3s; }
+        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 20px; transition: 0.3s; padding-left: 10px; }
         button:hover { transform: scale(1.2); }
-        #voice-btn { font-size: 18px; margin-right: 12px; cursor: pointer; filter: grayscale(1); transition: 0.3s; opacity: 0.6; }
+        #voice-btn { font-size: 18px; margin-right: 12px; cursor: pointer; filter: grayscale(1); transition: 0.3s; opacity: 0.5; }
         #voice-btn.active { filter: grayscale(0); transform: scale(1.3); text-shadow: 0 0 10px #00f2ff; opacity: 1; }
-        
-        /* Курсор печати */
-        .cursor { display: inline-block; width: 8px; height: 15px; background: #00f2ff; margin-left: 5px; animation: blink 0.7s infinite; vertical-align: middle; }
-        @keyframes blink { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
+        .cursor { display: inline-block; width: 7px; height: 14px; background: #00f2ff; margin-left: 4px; animation: blink 0.7s infinite; vertical-align: middle; }
+        @keyframes blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -39,7 +37,7 @@
     <div class="right-panel">
         <div class="header">
             LESIVA TERMINAL
-            <span id="clear-chat" title="Очистить память">RESET</span>
+            <span id="clear-chat">RESET</span>
         </div>
         <div id="msgs"></div>
         <div class="in-box">
@@ -55,24 +53,25 @@
         const voiceBtn = document.getElementById('voice-btn');
         let chatHistory = JSON.parse(localStorage.getItem('lesiva_history')) || [];
 
-        // Функция эффекта печати
-        const typeWriter = (element, text, speed = 20) => {
+        // Бронебойная функция печати
+        const typeWriter = (element, text, speed = 15) => {
+            element.innerHTML = ''; 
             let i = 0;
-            element.innerHTML = '';
             const cursor = document.createElement('span');
             cursor.className = 'cursor';
             element.appendChild(cursor);
 
-            const timer = setInterval(() => {
+            function typing() {
                 if (i < text.length) {
                     cursor.before(text.charAt(i));
                     i++;
                     box.scrollTop = box.scrollHeight;
+                    setTimeout(typing, speed);
                 } else {
-                    clearInterval(timer);
                     cursor.remove();
                 }
-            }, speed);
+            }
+            typing();
         };
 
         const renderHistory = () => {
@@ -106,16 +105,19 @@
                     headers: {'Content-Type': 'application/json'}, 
                     body: JSON.stringify({ text: v, history: chatHistory.slice(-10) }) 
                 });
+                
+                if (!r.ok) throw new Error('Network Error');
+                
                 const d = await r.json();
+                const answer = d.answer || "Брат, движок на паузе. Попробуй еще раз!";
                 
-                // Запускаем печать вместо мгновенного вывода
-                typeWriter(resDiv, d.answer);
+                typeWriter(resDiv, answer);
                 
-                chatHistory.push({ role: 'assistant', content: d.answer });
+                chatHistory.push({ role: 'assistant', content: answer });
                 if (chatHistory.length > 50) chatHistory.shift();
                 localStorage.setItem('lesiva_history', JSON.stringify(chatHistory));
             } catch(e) {
-                resDiv.innerHTML = '<span style="color:red">Связь оборвана, бро!</span>';
+                resDiv.innerHTML = '<span style="color:red">Связь оборвана, родной! Нажми RESET.</span>';
             }
         };
 
@@ -124,14 +126,19 @@
         if (SpeechRecognition) {
             const recognition = new SpeechRecognition();
             recognition.lang = 'ru-RU';
-            voiceBtn.onclick = () => { recognition.start(); voiceBtn.classList.add('active'); };
-            recognition.onresult = (e) => { input.value = e.results[0][0].transcript; voiceBtn.classList.remove('active'); send(); };
+            voiceBtn.onclick = () => { try { recognition.start(); voiceBtn.classList.add('active'); } catch(e) { recognition.stop(); } };
+            recognition.onresult = (e) => { input.value = e.results[0][0].transcript; send(); };
             recognition.onend = () => voiceBtn.classList.remove('active');
+            recognition.onerror = () => voiceBtn.classList.remove('active');
+        } else {
+            voiceBtn.style.display = 'none';
         }
 
         document.getElementById('clear-chat').onclick = () => {
-            if(confirm('Брат, уверен, что хочешь всё забыть?')) {
-                localStorage.removeItem('lesiva_history'); chatHistory = []; renderHistory();
+            if(confirm('Брат, чистим память?')) {
+                localStorage.removeItem('lesiva_history');
+                chatHistory = [];
+                renderHistory();
             }
         };
 
