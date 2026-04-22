@@ -2,49 +2,136 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LESIVA PROJECT | GLOBAL</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; overflow: hidden; }
-        .left-panel { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #1a1a1a; }
-        .lesiva-logo { font-size: 10vw; font-weight: 900; color: #00f2ff; text-transform: uppercase; letter-spacing: 20px; text-shadow: 0 0 30px #00f2ff; }
-        .sub-text { font-size: 14px; color: #555; text-transform: uppercase; letter-spacing: 10px; margin-top: 20px; }
-        .right-panel { width: 400px; background: #050505; display: flex; flex-direction: column; border-left: 1px solid #00f2ff33; position: relative; }
+        body { 
+            background: #000; 
+            color: #fff; 
+            font-family: 'Segoe UI', sans-serif; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: row; /* По умолчанию для ПК */
+            overflow: hidden; 
+        }
+
+        /* Адаптивность контейнера */
+        @media (max-width: 768px) {
+            body { flex-direction: column; overflow-y: auto; }
+        }
+
+        /* Левая панель / Верхняя на мобиле */
+        .left-panel { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            border-right: 1px solid #1a1a1a;
+            padding: 20px;
+            min-height: 30vh;
+        }
+
+        .lesiva-logo { 
+            font-size: 8vw; 
+            font-weight: 900; 
+            color: #00f2ff; 
+            text-transform: uppercase; 
+            letter-spacing: 15px; 
+            text-shadow: 0 0 20px #00f2ff; 
+            text-align: center;
+        }
+
+        .sub-text { font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 5px; margin-top: 10px; text-align: center;}
+
+        /* Правая панель (Чат) */
+        .right-panel { 
+            width: 400px; 
+            background: #050505; 
+            display: flex; 
+            flex-direction: column; 
+            border-left: 1px solid #00f2ff33; 
+            height: 100vh;
+        }
+
+        @media (max-width: 768px) {
+            .right-panel { 
+                width: 100%; 
+                height: 70vh; 
+                border-left: none; 
+                border-top: 2px solid #00f2ff33; 
+            }
+            .lesiva-logo { font-size: 15vw; letter-spacing: 5px; }
+        }
+
         .header { background: #00f2ff; color: #000; padding: 10px; text-align: center; font-weight: bold; font-size: 12px; letter-spacing: 3px; }
-        #msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; scrollbar-width: none; }
-        #msgs::-webkit-scrollbar { display: none; }
+
+        #msgs { 
+            flex: 1; 
+            padding: 20px; 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px; 
+        }
+
         .ai { color: #00f2ff; align-self: flex-start; max-width: 90%; line-height: 1.6; font-size: 14px; }
         .ai::before { content: 'AI: '; font-weight: bold; }
-        .user { color: #fff; align-self: flex-end; max-width: 90%; font-family: monospace; font-size: 14px; }
-        .user::before { content: '> '; color: #555; }
-        .in-box { padding: 15px; display: flex; border-top: 1px solid #1a1a1a; background: #080808; align-items: center; gap: 10px; }
-        input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 14px; }
-        .btn-group { display: flex; gap: 15px; align-items: center; }
-        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 20px; transition: 0.3s; padding: 0 5px; }
-        button:hover { transform: scale(1.2); }
-        .mic-active { color: #ff00ff !important; text-shadow: 0 0 10px #ff00ff; }
-        
-        @media (max-width: 900px) {
-            .left-panel { display: none; }
-            .right-panel { width: 100%; }
+        .user { color: #fff; align-self: flex-end; max-width: 90%; font-family: monospace; font-size: 14px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 4px;}
+
+        /* Поле ввода */
+        .in-box { 
+            padding: 15px; 
+            display: flex; 
+            border-top: 1px solid #1a1a1a; 
+            background: #080808; 
+            align-items: center;
+            gap: 10px;
+            padding-bottom: env(safe-area-inset-bottom, 15px); /* Для новых айфонов */
         }
+
+        input { 
+            flex: 1; 
+            background: transparent; 
+            border: none; 
+            color: #fff; 
+            outline: none; 
+            font-size: 16px; /* 16px чтобы iOS не зумил при вводе */
+        }
+
+        .btn-group { display: flex; gap: 15px; align-items: center; }
+        
+        button { 
+            background: transparent; 
+            border: none; 
+            color: #00f2ff; 
+            cursor: pointer; 
+            font-size: 24px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #mic.active { color: #ff00ff; text-shadow: 0 0 10px #ff00ff; transform: scale(1.2); }
     </style>
 </head>
 <body>
+
     <div class="left-panel">
         <div class="lesiva-logo">LESIVA</div>
         <div class="sub-text">DIGITAL TWIN ONLINE</div>
     </div>
+
     <div class="right-panel">
         <div class="header">LESIVA TERMINAL</div>
         <div id="msgs">
-            <div class="ai">Привет! О чем поболтаем? 🦾🎹</div>
+            <div class="ai">Система готова. О чем поболтаем, брат? 🦾🎹</div>
         </div>
         <div class="in-box">
             <input type="text" id="m" placeholder="Введите команду..." autocomplete="off">
             <div class="btn-group">
-                <button id="mic" title="Голосовой ввод">🎙️</button>
+                <button id="mic">🎙️</button>
                 <button id="go">➔</button>
             </div>
         </div>
@@ -53,62 +140,56 @@
     <script>
         let history = [];
         const box = document.getElementById('msgs');
-        const input = document.getElementById('m');
+        const i = document.getElementById('m');
+        const micBtn = document.getElementById('mic');
 
-        const send = async (textOverride = null) => {
-            const v = textOverride || input.value.trim();
-            if(!v) return;
+        const send = async (text = null) => {
+            const val = text || i.value.trim();
+            if(!val) return;
 
-            const uDiv = document.createElement('div');
-            uDiv.className = 'user';
-            uDiv.innerText = v;
-            box.appendChild(uDiv);
-            
-            if(!textOverride) input.value = '';
+            const u = document.createElement('div');
+            u.className = 'user';
+            u.innerText = val;
+            box.appendChild(u);
+            i.value = '';
             box.scrollTop = box.scrollHeight;
 
-            const resDiv = document.createElement('div');
-            resDiv.className = 'ai';
-            resDiv.innerHTML = '<i>Считываю вайб...</i>';
-            box.appendChild(resDiv);
+            const res = document.createElement('div');
+            res.className = 'ai';
+            res.innerHTML = '<i>Считываю вайб...</i>';
+            box.appendChild(res);
 
             try {
                 const r = await fetch('https://young-cake-650b.alexeyai2929.workers.dev', { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
-                    body: JSON.stringify({ text: v, history: history }) 
+                    body: JSON.stringify({ text: val, history: history }) 
                 });
                 const d = await r.json();
-                resDiv.innerHTML = d.answer;
+                res.innerHTML = d.answer;
                 
-                history.push({ role: 'user', content: v });
-                history.push({ role: 'assistant', content: d.answer });
-                if(history.length > 10) history = history.slice(-10);
-
+                history.push({role:'user', content:val}, {role:'assistant', content:d.answer});
+                if(history.length > 8) history = history.slice(-8);
             } catch(e) {
-                resDiv.innerHTML = '<span style="color:red">Связь оборвана. Проверь Cloudflare, брат!</span>';
+                res.innerHTML = 'Связь потеряна, брат.';
             }
             box.scrollTop = box.scrollHeight;
         };
 
         document.getElementById('go').onclick = () => send();
-        input.onkeypress = (e) => { if(e.key==='Enter') send(); };
+        i.onkeypress = (e) => { if(e.key==='Enter') send(); };
 
-        // ГОЛОСОВОЙ ВВОД
-        const micBtn = document.getElementById('mic');
+        // Голос
         const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (Speech) {
+        if(Speech) {
             const rec = new Speech();
             rec.lang = 'ru-RU';
-            rec.onstart = () => micBtn.classList.add('mic-active');
-            rec.onend = () => micBtn.classList.remove('mic-active');
-            rec.onresult = (e) => {
-                const t = e.results[0][0].transcript;
-                send(t);
-            };
+            rec.onstart = () => micBtn.classList.add('active');
+            rec.onend = () => micBtn.classList.remove('active');
+            rec.onresult = (e) => send(e.results[0][0].transcript);
             micBtn.onclick = () => rec.start();
         } else {
-            micBtn.style.display = 'none';
+            micBtn.style.opacity = '0.3';
         }
     </script>
 </body>
