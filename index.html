@@ -2,53 +2,69 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>LESIVA PROJECT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LESIVA PROJECT | GLOBAL</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; background: #000; color: #00f2ff; font-family: sans-serif; overflow: hidden; }
-        .container { display: flex; height: 100vh; }
-        .visual { flex: 1.5; display: flex; align-items: center; justify-content: center; background: radial-gradient(#111, #000); }
-        .logo { font-size: 80px; font-weight: 900; text-shadow: 0 0 20px #00f2ff; text-align: center; }
-        .terminal { flex: 1; border-left: 2px solid #00f2ff; display: flex; flex-direction: column; background: #050505; }
-        #chat { flex: 1; padding: 20px; overflow-y: auto; font-family: monospace; font-size: 14px; }
-        .input-box { padding: 15px; border-top: 1px solid #222; display: flex; }
-        input { background: none; border: none; color: #fff; flex: 1; outline: none; font-family: monospace; font-size: 16px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; overflow: hidden; }
+        .left-panel { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #1a1a1a; }
+        .lesiva-logo { font-size: 10vw; font-weight: 900; color: #00f2ff; text-transform: uppercase; letter-spacing: 20px; text-shadow: 0 0 30px #00f2ff; }
+        .sub-text { font-size: 14px; color: #555; text-transform: uppercase; letter-spacing: 10px; margin-top: 20px; }
+        .right-panel { width: 400px; background: #050505; display: flex; flex-direction: column; border-left: 1px solid #00f2ff33; }
+        .header { background: #00f2ff; color: #000; padding: 10px; text-align: center; font-weight: bold; font-size: 12px; letter-spacing: 3px; }
+        #msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; scrollbar-width: none; }
+        #msgs::-webkit-scrollbar { display: none; }
+        .ai { color: #00f2ff; align-self: flex-start; max-width: 90%; line-height: 1.6; font-size: 14px; }
+        .ai::before { content: 'AI: '; font-weight: bold; }
+        .user { color: #fff; align-self: flex-end; max-width: 90%; font-family: monospace; font-size: 14px; }
+        .user::before { content: '> '; color: #555; }
+        .in-box { padding: 15px; display: flex; border-top: 1px solid #1a1a1a; background: #080808; }
+        input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 14px; }
+        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 20px; transition: 0.3s; }
+        button:hover { transform: scale(1.2); }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="visual"><div class="logo">LESIVA<br><span style="font-size:14px;opacity:0.5;letter-spacing:5px;">DIGITAL TWIN</span></div></div>
-    <div class="terminal">
-        <div style="background:#00f2ff;color:#000;padding:5px;text-align:center;font-weight:bold;">TERMINAL v2.0</div>
-        <div id="chat"></div>
-        <div class="input-box">
-            <span style="color:#00f2ff;margin-right:10px;">></span>
-            <input type="text" id="in" placeholder="На связи..." autofocus autocomplete="off">
+    <div class="left-panel">
+        <div class="lesiva-logo">LESIVA</div>
+        <div class="sub-text">DIGITAL TWIN ONLINE</div>
+    </div>
+    <div class="right-panel">
+        <div class="header">LESIVA TERMINAL</div>
+        <div id="msgs">
+            <div class="ai">Система стабилизирована. Канал связи Тбилиси — Мир открыт. Что замутим сегодня, брат? 🦾🎹</div>
+        </div>
+        <div class="in-box">
+            <input type="text" id="m" placeholder="Введите команду..." autocomplete="off">
+            <button id="go">➔</button>
         </div>
     </div>
-</div>
-<script>
-    const chat = document.getElementById('chat');
-    const input = document.getElementById('in');
-    chat.innerHTML = '<div>AI: Система готова. Лёша в сети. Тбилиси на связи.</div>';
-
-    input.addEventListener('keydown', async (e) => {
-        if (e.key === 'Enter' && input.value) {
-            const val = input.value;
-            input.value = '';
-            chat.innerHTML += `<div style="color:#ff00ff;margin-top:10px;">> ${val}</div>`;
+    <script>
+        const send = async () => {
+            const i = document.getElementById('m'), v = i.value.trim();
+            if(!v) return;
+            const box = document.getElementById('msgs');
+            box.innerHTML += '<div class="user">' + v + '</div>';
+            i.value = '';
+            box.scrollTop = box.scrollHeight;
+            const res = document.createElement('div');
+            res.className = 'ai'; res.innerHTML = '<i>Считываю вайб...</i>';
+            box.appendChild(res);
             try {
-                const r = await fetch('https://young-cake-650b.lesiva-ai.workers.dev', {
-                    method: 'POST',
-                    body: JSON.stringify({ message: val })
+                const r = await fetch('https://young-cake-650b.alexeyai2929.workers.dev', { 
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify({ text: v }) 
                 });
                 const d = await r.json();
-                chat.innerHTML += `<div style="color:#00f2ff;margin-top:5px;">AI: ${d.response}</div>`;
-            } catch {
-                chat.innerHTML += `<div style="color:red;margin-top:5px;">AI: Ошибка связи!</div>`;
+                res.innerHTML = d.answer;
+            } catch(e) {
+                res.innerHTML = '<span style="color:red">Связь оборвана. Проверь Cloudflare, брат!</span>';
             }
-            chat.scrollTop = chat.scrollHeight;
-        }
-    });
-</script>
+            box.scrollTop = box.scrollHeight;
+        };
+        document.getElementById('go').onclick = send;
+        document.getElementById('m').onkeypress = (e) => { if(e.key==='Enter') send(); };
+    </script>
 </body>
 </html>
