@@ -2,31 +2,46 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LESIVA PROJECT | GLOBAL ULTIMATE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LESIVA PROJECT | MOBILE ADAPTIVE</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; overflow: hidden; }
-        .left-panel { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #1a1a1a; }
-        .lesiva-logo { font-size: 10vw; font-weight: 900; color: #00f2ff; text-transform: uppercase; letter-spacing: 20px; text-shadow: 0 0 30px #00f2ff; }
-        .sub-text { font-size: 14px; color: #555; text-transform: uppercase; letter-spacing: 10px; margin-top: 20px; }
-        .right-panel { width: 400px; background: #050505; display: flex; flex-direction: column; border-left: 1px solid #00f2ff33; }
-        .header { background: #00f2ff; color: #000; padding: 10px; text-align: center; font-weight: bold; font-size: 11px; letter-spacing: 3px; position: relative; }
-        #clear-chat { position: absolute; right: 10px; cursor: pointer; color: #000; font-size: 9px; background: #fff; padding: 2px 6px; border-radius: 3px; font-weight: 900; }
-        #msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; scrollbar-width: none; -ms-overflow-style: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', Roboto, sans-serif; height: 100vh; display: flex; overflow: hidden; flex-direction: row; }
+        
+        /* Логотип слева (для компов) */
+        .left-panel { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #1a1a1a; transition: 0.3s; }
+        .lesiva-logo { font-size: 8vw; font-weight: 900; color: #00f2ff; text-transform: uppercase; letter-spacing: 15px; text-shadow: 0 0 25px #00f2ff; text-align: center; }
+        .sub-text { font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 8px; margin-top: 15px; text-align: center; }
+
+        /* Панель чата */
+        .right-panel { width: 450px; background: #050505; display: flex; flex-direction: column; border-left: 1px solid #00f2ff33; position: relative; }
+        .header { background: #00f2ff; color: #000; padding: 12px; text-align: center; font-weight: bold; font-size: 11px; letter-spacing: 2px; z-index: 10; }
+        #clear-chat { position: absolute; right: 10px; top: 8px; cursor: pointer; color: #000; font-size: 10px; background: #fff; padding: 3px 8px; border-radius: 4px; font-weight: 900; }
+
+        #msgs { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; scrollbar-width: none; }
         #msgs::-webkit-scrollbar { display: none; }
-        .ai { color: #00f2ff; align-self: flex-start; max-width: 95%; line-height: 1.6; font-size: 14px; position: relative; }
+
+        .ai { color: #00f2ff; align-self: flex-start; max-width: 95%; line-height: 1.5; font-size: 15px; word-wrap: break-word; }
         .ai::before { content: 'AI: '; font-weight: bold; }
-        .user { color: #fff; align-self: flex-end; max-width: 90%; font-family: monospace; font-size: 14px; opacity: 0.8; }
-        .user::before { content: '> '; color: #555; }
-        .in-box { padding: 15px; display: flex; align-items: center; border-top: 1px solid #1a1a1a; background: #080808; }
-        input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 14px; }
-        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 20px; transition: 0.3s; padding-left: 10px; }
-        button:hover { transform: scale(1.2); }
-        #voice-btn { font-size: 18px; margin-right: 12px; cursor: pointer; filter: grayscale(1); transition: 0.3s; opacity: 0.5; }
-        #voice-btn.active { filter: grayscale(0); transform: scale(1.3); text-shadow: 0 0 10px #00f2ff; opacity: 1; }
-        .cursor { display: inline-block; width: 7px; height: 14px; background: #00f2ff; margin-left: 4px; animation: blink 0.7s infinite; vertical-align: middle; }
+        .user { color: #fff; align-self: flex-end; max-width: 85%; font-family: monospace; font-size: 14px; opacity: 0.8; background: #111; padding: 8px 12px; border-radius: 10px 10px 0 10px; }
+        
+        .in-box { padding: 15px; display: flex; align-items: center; border-top: 1px solid #1a1a1a; background: #080808; padding-bottom: calc(15px + env(safe-area-inset-bottom)); }
+        input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 16px; /* 16px чтобы айфон не зумил при вводе */ }
+        button { background: transparent; border: none; color: #00f2ff; cursor: pointer; font-size: 24px; padding-left: 12px; }
+        
+        #voice-btn { font-size: 22px; margin-right: 15px; cursor: pointer; filter: grayscale(1); opacity: 0.6; }
+        #voice-btn.active { filter: grayscale(0); transform: scale(1.2); text-shadow: 0 0 10px #00f2ff; opacity: 1; }
+        .cursor { display: inline-block; width: 8px; height: 16px; background: #00f2ff; margin-left: 4px; animation: blink 0.7s infinite; vertical-align: middle; }
         @keyframes blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+
+        /* АДАПТАЦИЯ ПОД ТЕЛЕФОНЫ */
+        @media (max-width: 900px) {
+            body { flex-direction: column; }
+            .left-panel { display: none; } /* Скрываем огромное лого на мобиле, чтобы не мешало чату */
+            .right-panel { width: 100%; height: 100vh; border-left: none; }
+            .lesiva-logo { font-size: 12vw; letter-spacing: 5px; }
+            .ai { font-size: 14px; }
+        }
     </style>
 </head>
 <body>
@@ -41,8 +56,8 @@
         </div>
         <div id="msgs"></div>
         <div class="in-box">
-            <span id="voice-btn" title="Нажми и говори">🎤</span>
-            <input type="text" id="m" placeholder="Введите команду..." autocomplete="off">
+            <span id="voice-btn">🎤</span>
+            <input type="text" id="m" placeholder="Напиши брату..." autocomplete="off">
             <button id="go">➔</button>
         </div>
     </div>
@@ -53,23 +68,19 @@
         const voiceBtn = document.getElementById('voice-btn');
         let chatHistory = JSON.parse(localStorage.getItem('lesiva_history')) || [];
 
-        // Бронебойная функция печати
         const typeWriter = (element, text, speed = 15) => {
             element.innerHTML = ''; 
             let i = 0;
             const cursor = document.createElement('span');
             cursor.className = 'cursor';
             element.appendChild(cursor);
-
             function typing() {
                 if (i < text.length) {
                     cursor.before(text.charAt(i));
                     i++;
                     box.scrollTop = box.scrollHeight;
                     setTimeout(typing, speed);
-                } else {
-                    cursor.remove();
-                }
+                } else { cursor.remove(); }
             }
             typing();
         };
@@ -88,40 +99,26 @@
         const send = async () => {
             const v = input.value.trim();
             if(!v) return;
-
             box.innerHTML += '<div class="user">' + v + '</div>';
             chatHistory.push({ role: 'user', content: v });
             input.value = '';
             box.scrollTop = box.scrollHeight;
-
             const resDiv = document.createElement('div');
             resDiv.className = 'ai';
             resDiv.innerHTML = '<i>Считываю вайб...</i>';
             box.appendChild(resDiv);
-
             try {
                 const r = await fetch('https://young-cake-650b.alexeyai2929.workers.dev', { 
-                    method: 'POST', 
-                    headers: {'Content-Type': 'application/json'}, 
+                    method: 'POST', headers: {'Content-Type': 'application/json'}, 
                     body: JSON.stringify({ text: v, history: chatHistory.slice(-10) }) 
                 });
-                
-                if (!r.ok) throw new Error('Network Error');
-                
                 const d = await r.json();
-                const answer = d.answer || "Брат, движок на паузе. Попробуй еще раз!";
-                
-                typeWriter(resDiv, answer);
-                
-                chatHistory.push({ role: 'assistant', content: answer });
-                if (chatHistory.length > 50) chatHistory.shift();
-                localStorage.setItem('lesiva_history', JSON.stringify(chatHistory));
-            } catch(e) {
-                resDiv.innerHTML = '<span style="color:red">Связь оборвана, родной! Нажми RESET.</span>';
-            }
+                typeWriter(resDiv, d.answer || "Брат, связь лагает.");
+                chatHistory.push({ role: 'assistant', content: d.answer });
+                localStorage.setItem('lesiva_history', JSON.stringify(chatHistory.slice(-50)));
+            } catch(e) { resDiv.innerHTML = '<span style="color:red">Ошибка связи. Жми RESET.</span>'; }
         };
 
-        // Голосовой ввод
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
             const recognition = new SpeechRecognition();
@@ -129,19 +126,11 @@
             voiceBtn.onclick = () => { try { recognition.start(); voiceBtn.classList.add('active'); } catch(e) { recognition.stop(); } };
             recognition.onresult = (e) => { input.value = e.results[0][0].transcript; send(); };
             recognition.onend = () => voiceBtn.classList.remove('active');
-            recognition.onerror = () => voiceBtn.classList.remove('active');
-        } else {
-            voiceBtn.style.display = 'none';
         }
 
         document.getElementById('clear-chat').onclick = () => {
-            if(confirm('Брат, чистим память?')) {
-                localStorage.removeItem('lesiva_history');
-                chatHistory = [];
-                renderHistory();
-            }
+            if(confirm('Брат, чистим память?')) { localStorage.removeItem('lesiva_history'); chatHistory = []; renderHistory(); }
         };
-
         document.getElementById('go').onclick = send;
         input.onkeypress = (e) => { if(e.key==='Enter') send(); };
         renderHistory();
