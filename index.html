@@ -19,6 +19,7 @@
 
         .wrapper { display: flex; height: 100%; width: 100%; }
 
+        /* ЛЕВАЯ ПАНЕЛЬ - ЛОГО */
         .left-panel { 
             flex: 1; 
             display: flex; 
@@ -40,6 +41,7 @@
             text-align: center;
         }
 
+        /* ПРАВАЯ ПАНЕЛЬ - ЧАТ */
         .right-panel { 
             flex: 1; 
             background: #050505; 
@@ -50,6 +52,7 @@
             position: relative;
         }
 
+        /* МОБИЛЬНАЯ АДАПТАЦИЯ */
         @media (max-width: 768px) {
             .wrapper { flex-direction: column; }
             .left-panel { flex: none; height: 18vh; width: 100%; border-right: none; border-bottom: 1px solid #1a1a1a; }
@@ -95,6 +98,7 @@
         .ai { color: #00f2ff; align-self: flex-start; max-width: 90%; font-size: 15px; line-height: 1.5; }
         .user { color: #fff; align-self: flex-end; max-width: 90%; background: #1a1a1a; padding: 10px 15px; border-radius: 10px; font-size: 14px; border: 1px solid #333; }
 
+        /* ИНПУТ */
         .in-box { 
             flex: none;
             padding: 15px; 
@@ -121,30 +125,16 @@
         input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 16px; height: 45px; }
 
         .btn-group { display: flex; gap: 15px; align-items: center; }
-        .btn-group button { background: transparent; border: none; color: #444; cursor: pointer; font-size: 24px; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .btn-group button { background: transparent; border: none; color: #444; cursor: pointer; font-size: 24px; transition: 0.3s; }
         
         #go { color: #00f2ff !important; }
 
-        /* ЭФФЕКТЫ ДЛЯ ГЛАЗА И МИКРОФОНА */
-        #vision.active, #mic.active { 
+        /* МИКРОФОН - СВЕЧЕНИЕ КАК У ЛОГО */
+        #mic.active { 
             color: #00f2ff !important; 
-            text-shadow: 0 0 15px rgba(0, 242, 255, 0.8);
-            filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.6));
+            text-shadow: 0 0 15px rgba(0, 242, 255, 0.8); /* Внутреннее свечение */
+            filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.6)); /* Внешний ореол */
             transform: scale(1.1);
-        }
-
-        .vision-preview {
-            position: absolute;
-            bottom: 80px;
-            left: 20px;
-            width: 60px;
-            height: 60px;
-            border: 1px solid #00f2ff;
-            border-radius: 8px;
-            display: none;
-            background-size: cover;
-            background-position: center;
-            box-shadow: 0 0 10px #00f2ff44;
         }
     </style>
 </head>
@@ -162,16 +152,15 @@
             </div>
             
             <div id="msgs">
-                <div class="ai">Добро пожаловать в мой ИИ мир! Я — цифровой Lesiva, твой проводник и помощник во всём. 🦾🎹🚀</div>
-            </div>
+                <div class="ai">Добро пожаловать в мой ИИ мир! Я — цифровой Lesiva, твой проводник и помощник во всём. Мой движок LESIVA ENGINE v3.0 Global заряжен на максимум и готов к созиданию.
 
-            <div id="vision-preview" class="vision-preview"></div>
+Прежде чем мы начнем — расскажи немного о себе: как мне лучше к тебе обращаться и какой стиль общения тебе ближе? 🦾🎹🚀</div>
+            </div>
 
             <div class="in-box">
                 <div class="input-container">
                     <input type="text" id="m" placeholder="Напиши что-нибудь..." autocomplete="off">
                     <div class="btn-group">
-                        <button id="vision" onclick="document.getElementById('file-in').click()">👁️</button>
                         <button id="mic">🎙️</button>
                         <button id="go">➔</button>
                     </div>
@@ -180,61 +169,31 @@
         </div>
     </div>
 
-    <input type="file" id="file-in" accept="image/*" style="display:none" onchange="previewImage(this)">
-
     <script>
         let history = [];
-        let selectedImage = null;
-        const box = document.getElementById('msgs'), i = document.getElementById('m'), 
-              micBtn = document.getElementById('mic'), visionBtn = document.getElementById('vision'),
-              preview = document.getElementById('vision-preview');
+        const box = document.getElementById('msgs'), i = document.getElementById('m'), micBtn = document.getElementById('mic');
 
         const resetChat = () => {
             history = [];
-            selectedImage = null;
-            preview.style.display = 'none';
             box.innerHTML = '<div class="ai">Память очищена. Я готов, брат.</div>';
-        };
-
-        const previewImage = (input) => {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    selectedImage = e.target.result;
-                    preview.style.backgroundImage = `url(${selectedImage})`;
-                    preview.style.display = 'block';
-                    visionBtn.classList.add('active');
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
         };
 
         const send = async (text = null) => {
             const val = text || i.value.trim();
-            if(!val && !selectedImage) return;
+            if(!val) return;
 
-            const u = document.createElement('div'); u.className = 'user'; u.innerText = val || "Фото вложение"; box.appendChild(u);
-            
-            // Очистка
-            i.value = ''; 
-            preview.style.display = 'none';
-            visionBtn.classList.remove('active');
-            const currentImg = selectedImage;
-            selectedImage = null;
-            box.scrollTop = box.scrollHeight;
+            const u = document.createElement('div'); u.className = 'user'; u.innerText = val; box.appendChild(u);
+            i.value = ''; box.scrollTop = box.scrollHeight;
 
             const res = document.createElement('div'); res.className = 'ai'; res.innerHTML = '<i>Обработка...</i>'; box.appendChild(res);
             box.scrollTop = box.scrollHeight;
 
             try {
+                // НЕ ЗАБУДЬ ЗАМЕНИТЬ НА СВОЙ URL ВОРКЕРА
                 const r = await fetch('https://young-cake-650b.alexeyai2929.workers.dev', { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
-                    body: JSON.stringify({ 
-                        text: val, 
-                        history: history,
-                        image: currentImg // Отправляем картинку если она есть
-                    }) 
+                    body: JSON.stringify({ text: val, history: history }) 
                 });
                 const d = await r.json();
                 res.innerHTML = d.answer;
@@ -250,8 +209,8 @@
         const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
         if(Speech) {
             const rec = new Speech(); rec.lang = 'ru-RU';
-            rec.onstart = () => micBtn.classList.add('active');
-            rec.onend = () => micBtn.classList.remove('active');
+            rec.onstart = () => micBtn.classList.add('active'); // ВКЛЮЧАЕМ НЕОН ПРИ НАЖАТИИ
+            rec.onend = () => micBtn.classList.remove('active'); // ВЫКЛЮЧАЕМ НЕОН, КАК ДОСЛУШАЛ
             rec.onresult = (e) => send(e.results[0][0].transcript);
             micBtn.onclick = () => rec.start();
         }
