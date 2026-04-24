@@ -19,10 +19,9 @@
 
         .wrapper { display: flex; height: 100%; width: 100%; }
 
-        ### ЛЕВАЯ ПАНЕЛЬ (АВАТАР)
+        /* ЛЕВАЯ ПАНЕЛЬ */
         .left-panel { 
-            flex: none; /* Убираем гибкость */
-            width: 35%; /* Фиксированная ширина для баланса */
+            flex: 1; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
@@ -32,78 +31,71 @@
             padding: 20px;
         }
 
-        /* Мягкий бледно-лазурный для лого */
         .lesiva-logo { 
-            font-size: 3vw; 
+            font-size: 6vw; 
             font-weight: 900; 
-            color: #87CEEB; 
+            color: #00f2ff; 
             text-transform: uppercase; 
-            letter-spacing: 10px; 
-            text-shadow: 0 0 15px rgba(135, 206, 235, 0.4); 
+            letter-spacing: 15px; 
+            text-shadow: 0 0 30px rgba(0, 242, 255, 0.4); 
             text-align: center;
             margin-bottom: 20px;
         }
 
-        ### ЭСТЕТИЧНЫЙ КИБОРГ (ТВОЕ МИНИ-ЛИЦО)
-        .cyber-lesiva {
-            width: 130px; /* Сделали компактным */
-            height: 150px; /* Уменьшили высоту */
-            /* Мягкое свечение, не режет глаз */
-            filter: drop-shadow(0 0 10px rgba(135, 206, 235, 0.5));
-            position: relative;
-            animation: miniPulse 4s infinite alternate;
-        }
-
-        @keyframes miniPulse {
-            from { opacity: 0.8; transform: scale(1); }
-            to { opacity: 1; transform: scale(1.02); }
+        /* КОНТЕЙНЕР РОБОТА */
+        .robot-container {
+            width: 250px; 
+            height: 250px;
+            filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.6));
         }
 
         /* АНИМАЦИЯ ВЗГЛЯДА */
-        .eye-pupils {
-            animation: gaze 10s infinite ease-in-out;
-        }
-        @keyframes gaze {
-            0%, 100% { transform: translate(0, 0); }
-            20% { transform: translate(1px, -0.5px); }
-            50% { transform: translate(-1px, 0.5px); }
+        .pupils {
+            animation: lookAround 8s infinite ease-in-out;
         }
 
-        /* АНИМАЦИЯ МОРГАНИЯ (Мягкая) */
+        @keyframes lookAround {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(3px, -1px); }
+            50% { transform: translate(-3px, 1px); }
+            75% { transform: translate(0, 2px); }
+        }
+
+        /* АНИМАЦИЯ МОРГАНИЯ */
         .eyelids {
             transform-origin: center;
             transform: scaleY(0);
-            animation: blink 7s infinite;
-            fill: #000; /* Закрывает глаз черным */
-        }
-        @keyframes blink {
-            0%, 92%, 100% { transform: scaleY(0); }
-            94%, 98% { transform: scaleY(1); }
+            animation: blinkEyes 5s infinite;
+            fill: #000;
         }
 
-        ### ПРАВАЯ ПАНЕЛЬ (ЧАТ)
+        @keyframes blinkEyes {
+            0%, 90%, 100% { transform: scaleY(0); }
+            92% { transform: scaleY(1.2); }
+        }
+
+        /* ПРАВАЯ ПАНЕЛЬ */
         .right-panel { 
             flex: 1; 
             background: #050505; 
             display: flex; 
             flex-direction: column; 
-            border-left: 1px solid #1a1a1a;
+            border-left: 1px solid #00f2ff22;
             height: 100%;
             position: relative;
         }
 
-        ### МОБИЛЬНАЯ АДАПТАЦИЯ (Тут тоже всё мягко)
         @media (max-width: 768px) {
             .wrapper { flex-direction: column; }
-            .left-panel { flex: none; height: 20vh; width: 100%; border-right: none; border-bottom: 1px solid #1a1a1a; padding: 10px; }
-            .right-panel { flex: 1; height: 80vh; width: 100%; }
-            .lesiva-logo { font-size: 6vw; letter-spacing: 4px; margin-bottom: 5px; }
-            .cyber-lesiva { width: 70px; height: 80px; }
+            .left-panel { flex: none; height: 25vh; width: 100%; border-right: none; border-bottom: 1px solid #1a1a1a; }
+            .right-panel { flex: 1; height: 75vh; width: 100%; }
+            .lesiva-logo { font-size: 10vw; letter-spacing: 5px; }
+            .robot-container { width: 120px; height: 120px; }
         }
 
         .header { 
-            background: #111; /* Темный хейдер для комфорта */
-            color: #87CEEB; /* Лазурный текст */
+            background: #00f2ff; 
+            color: #000; 
             padding: 10px 15px; 
             display: flex; 
             justify-content: space-between; 
@@ -111,39 +103,50 @@
             font-weight: 900; 
             font-size: 11px; 
             text-transform: uppercase;
-            border-bottom: 1px solid #1a1a1a;
         }
 
-        .reset-btn {
-            background: transparent; color: #444; border: 1px solid #222;
-            padding: 2px 10px; font-size: 10px; cursor: pointer; transition: 0.3s;
-        }
-        .reset-btn:hover { color: #87CEEB; border-color: #87CEEB; }
+        .reset-btn { background: #000; color: #00f2ff; border: 1px solid #000; padding: 2px 10px; font-size: 10px; cursor: pointer; }
 
         #msgs { 
-            flex: 1; padding: 20px; overflow-y: auto; display: flex; 
-            flex-direction: column; gap: 12px; max-width: 900px; margin: 0 auto; width: 100%;
+            flex: 1; 
+            padding: 20px; 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            max-width: 900px; 
+            margin: 0 auto;
+            width: 100%;
         }
 
-        /* Мягкий бледно-лазурный для ИИ */
-        .ai { color: #87CEEB; align-self: flex-start; max-width: 90%; font-size: 15px; line-height: 1.5; }
+        .ai { color: #00f2ff; align-self: flex-start; max-width: 90%; font-size: 15px; line-height: 1.5; }
         .user { color: #fff; align-self: flex-end; max-width: 90%; background: #1a1a1a; padding: 10px 15px; border-radius: 10px; font-size: 14px; border: 1px solid #333; }
 
         .in-box { 
-            flex: none; padding: 15px; display: flex; background: #000; border-top: 1px solid #1a1a1a;
+            flex: none;
+            padding: 15px; 
+            display: flex; 
+            background: #000; 
+            border-top: 1px solid #1a1a1a; 
             padding-bottom: calc(15px + env(safe-area-inset-bottom));
         }
 
         .input-container {
-            max-width: 850px; width: 100%; margin: 0 auto; display: flex;
-            background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 12px;
-            padding: 5px 15px; align-items: center; gap: 10px;
+            max-width: 850px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            background: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 5px 15px;
+            align-items: center;
+            gap: 10px;
         }
 
         input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 16px; height: 45px; }
-        .btn-group button { background: transparent; border: none; color: #444; cursor: pointer; font-size: 24px; transition: 0.3s; }
-        #go { color: #87CEEB !important; }
-        #mic.active { color: #87CEEB !important; text-shadow: 0 0 10px #87CEEB; }
+        .btn-group button { background: transparent; border: none; color: #444; cursor: pointer; font-size: 24px; }
+        #go { color: #00f2ff !important; }
     </style>
 </head>
 <body>
@@ -152,39 +155,40 @@
         <div class="left-panel">
             <div class="lesiva-logo">LESIVA</div>
             
-            <div class="cyber-lesiva">
-                <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M30 40 Q30 80 50 100 Q70 80 70 40 Q70 25 50 25 Q30 25 30 40" fill="none" stroke="#87CEEB" stroke-width="1.2" opacity="0.9" />
+            <div class="robot-container">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M30 30 L70 30 L75 55 L50 85 L25 55 Z" stroke="#00f2ff" stroke-width="1.5" fill="none" />
+                    <path d="M35 35 L65 35 L68 53 L50 78 L32 53 Z" stroke="#00f2ff" stroke-width="0.5" fill="none" opacity="0.4" />
                     
-                    <g stroke="#fff" stroke-width="0.8" opacity="0.8" fill="none">
-                        <path d="M30 42 Q25 35 35 20 M70 42 Q75 35 65 20" stroke="#87CEEB" stroke-width="1.5" />
-                        <path d="M35 20 Q50 10 65 20" stroke-width="2" stroke="#fff" /> </g>
-
-                    <g class="eye-pupils">
-                        <ellipse cx="43" cy="52" rx="5" ry="3" stroke="#87CEEB" fill="none" stroke-width="0.8" opacity="0.7"/>
-                        <ellipse cx="57" cy="52" rx="5" ry="3" stroke="#87CEEB" fill="none" stroke-width="0.8" opacity="0.7"/>
-                        <circle cx="43" cy="52" r="1.2" fill="#fff" opacity="0.9" /> <circle cx="57" cy="52" r="1.2" fill="#fff" opacity="0.9" /> </g>
-
-                    <rect x="36" y="47" width="14" height="10" class="eyelids" />
-                    <rect x="50" y="47" width="14" height="10" class="eyelids" />
-
-                    <path d="M42 82 Q50 86 58 82" stroke="#87CEEB" stroke-width="0.8" fill="none" opacity="0.7" /> </svg>
+                    <path d="M36 45 L46 45 L48 52 L38 52 Z" stroke="#00f2ff" stroke-width="1" fill="none" />
+                    <path d="M54 45 L64 45 L62 52 L52 52 Z" stroke="#00f2ff" stroke-width="1" fill="none" />
+                    
+                    <g class="pupils">
+                        <circle cx="41" cy="48.5" r="1.5" fill="#fff" />
+                        <circle cx="58" cy="48.5" r="1.5" fill="#fff" />
+                    </g>
+                    
+                    <rect x="35" y="44" width="14" height="10" class="eyelids" />
+                    <rect x="51" y="44" width="14" height="10" class="eyelids" />
+                    
+                    <path d="M50 30 L50 20" stroke="#00f2ff" stroke-width="1" />
+                    <circle cx="50" cy="18" r="1.5" fill="#00f2ff" />
+                    <path d="M40 70 L60 70" stroke="#00f2ff" stroke-width="0.8" opacity="0.6" />
+                </svg>
             </div>
         </div>
 
         <div class="right-panel">
             <div class="header">
-                <span>LESIVA ENGINE v3.0 | КОМФОРТНЫЙ ИНТЕРФЕЙС</span>
+                <span>TERMINAL v3.0</span>
                 <button class="reset-btn" onclick="resetChat()">Reset</button>
             </div>
-            
             <div id="msgs">
-                <div class="ai">Система синхронизирована. Я — твое цифровое воплощение. Теперь всё работает мягко и эстетично, чтобы тебе было максимально комфортно. На связи! 🦾🎹🚀</div>
+                <div class="ai">Система активна. Я — цифровой Lesiva. Твой робот-проводник готов к работе. Напиши что-нибудь, проверим связь! 🦾🤖🚀</div>
             </div>
-
             <div class="in-box">
                 <div class="input-container">
-                    <input type="text" id="m" placeholder="Напиши мне, бро..." autocomplete="off">
+                    <input type="text" id="m" placeholder="Напиши Lesiva бро..." autocomplete="off">
                     <div class="btn-group">
                         <button id="mic">🎙️</button>
                         <button id="go">➔</button>
@@ -200,7 +204,7 @@
 
         const resetChat = () => {
             history = [];
-            box.innerHTML = '<div class="ai">Память очищена. Я снова в строю.</div>';
+            box.innerHTML = '<div class="ai">Память очищена. Робот перезагружен.</div>';
         };
 
         const send = async (text = null) => {
@@ -210,7 +214,7 @@
             const u = document.createElement('div'); u.className = 'user'; u.innerText = val; box.appendChild(u);
             i.value = ''; box.scrollTop = box.scrollHeight;
 
-            const res = document.createElement('div'); res.className = 'ai'; res.innerHTML = '<i>Обработка нейронных связей...</i>'; box.appendChild(res);
+            const res = document.createElement('div'); res.className = 'ai'; res.innerHTML = '<i>Обработка данных...</i>'; box.appendChild(res);
             box.scrollTop = box.scrollHeight;
 
             try {
@@ -223,7 +227,7 @@
                 res.innerHTML = d.answer;
                 history.push({role:'user', content:val}, {role:'assistant', content:d.answer});
                 if(history.length > 10) history = history.slice(-10);
-            } catch(e) { res.innerHTML = 'Бро, сеть упала. Подключи кабель!'; }
+            } catch(e) { res.innerHTML = 'Ошибка связи. Робот офлайн.'; }
             box.scrollTop = box.scrollHeight;
         };
 
@@ -233,8 +237,8 @@
         const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
         if(Speech) {
             const rec = new Speech(); rec.lang = 'ru-RU';
-            rec.onstart = () => micBtn.classList.add('active');
-            rec.onend = () => micBtn.classList.remove('active');
+            rec.onstart = () => micBtn.style.color = '#00f2ff';
+            rec.onend = () => micBtn.style.color = '#444';
             rec.onresult = (e) => send(e.results[0][0].transcript);
             micBtn.onclick = () => rec.start();
         }
