@@ -19,7 +19,7 @@
 
         .wrapper { display: flex; height: 100%; width: 100%; }
 
-        /* ЛЕВАЯ ПАНЕЛЬ - ЛОГО */
+        /* ЛЕВАЯ ПАНЕЛЬ - ЛОГО И МОЗГ */
         .left-panel { 
             flex: 1; 
             display: flex; 
@@ -31,6 +31,7 @@
             padding: 20px;
         }
 
+        /* Твоя оригинальная надпись */
         .lesiva-logo { 
             font-size: 6vw; 
             font-weight: 900; 
@@ -39,6 +40,21 @@
             letter-spacing: 15px; 
             text-shadow: 0 0 30px rgba(0, 242, 255, 0.4); 
             text-align: center;
+            margin-bottom: 20px; /* Отступ до мозга */
+        }
+
+        /* SVG МОЗГ ИЗ НАШИХ ФИШЕК */
+        .brain-container {
+            width: 180px; /* Чуть компактнее, чтобы не перебивал надпись */
+            height: 180px;
+            filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.6));
+            animation: brainPulse 3s infinite ease-in-out;
+        }
+
+        @keyframes brainPulse {
+            0% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.4)); opacity: 0.8; }
+            50% { transform: scale(1.03); filter: drop-shadow(0 0 25px rgba(0, 242, 255, 0.8)); opacity: 1; }
+            100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.4)); opacity: 0.8; }
         }
 
         /* ПРАВАЯ ПАНЕЛЬ - ЧАТ */
@@ -55,9 +71,10 @@
         /* МОБИЛЬНАЯ АДАПТАЦИЯ */
         @media (max-width: 768px) {
             .wrapper { flex-direction: column; }
-            .left-panel { flex: none; height: 18vh; width: 100%; border-right: none; border-bottom: 1px solid #1a1a1a; }
-            .right-panel { flex: 1; height: 82vh; width: 100%; }
-            .lesiva-logo { font-size: 10vw; letter-spacing: 5px; }
+            .left-panel { flex: none; height: 22vh; width: 100%; border-right: none; border-bottom: 1px solid #1a1a1a; padding: 10px; }
+            .right-panel { flex: 1; height: 78vh; width: 100%; }
+            .lesiva-logo { font-size: 10vw; letter-spacing: 5px; margin-bottom: 5px; }
+            .brain-container { width: 70px; height: 70px; }
         }
 
         .header { 
@@ -129,11 +146,10 @@
         
         #go { color: #00f2ff !important; }
 
-        /* МИКРОФОН - СВЕЧЕНИЕ КАК У ЛОГО */
         #mic.active { 
             color: #00f2ff !important; 
-            text-shadow: 0 0 15px rgba(0, 242, 255, 0.8); /* Внутреннее свечение */
-            filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.6)); /* Внешний ореол */
+            text-shadow: 0 0 15px rgba(0, 242, 255, 0.8); 
+            filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.6)); 
             transform: scale(1.1);
         }
     </style>
@@ -143,6 +159,25 @@
     <div class="wrapper">
         <div class="left-panel">
             <div class="lesiva-logo">LESIVA</div>
+            
+            <div class="brain-container">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 15 C30 15, 15 30, 15 50 C15 70, 30 85, 50 85 M50 15 C70 15, 85 30, 85 50 C85 70, 70 85, 50 85" stroke="#00f2ff" stroke-width="1.2" fill="none" opacity="0.3"/>
+                    <path d="M50 25 C38 25, 28 35, 28 48 C28 60, 38 70, 50 70 M50 25 C62 25, 72 35, 72 48 C72 60, 62 70, 50 70" stroke="#00f2ff" stroke-width="1.8" fill="none" opacity="0.6"/>
+                    <path d="M50 35 C45 35, 40 40, 40 48 C40 55, 45 60, 50 60 M50 35 C55 35, 60 40, 60 48 C60 55, 55 60, 50 60" stroke="#00f2ff" stroke-width="2.2" fill="none"/>
+                    <circle cx="50" cy="48" r="2.5" fill="#fff">
+                        <animate attributeName="opacity" values="1;0.2;1" dur="2s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="35" cy="40" r="1.2" fill="#00f2ff"/>
+                    <circle cx="65" cy="40" r="1.2" fill="#00f2ff"/>
+                    <circle cx="40" cy="60" r="1.2" fill="#00f2ff"/>
+                    <circle cx="60" cy="60" r="1.2" fill="#00f2ff"/>
+                    <line x1="50" y1="48" x2="35" y2="40" stroke="#00f2ff" stroke-width="0.4" opacity="0.5"/>
+                    <line x1="50" y1="48" x2="65" y2="40" stroke="#00f2ff" stroke-width="0.4" opacity="0.5"/>
+                    <line x1="50" y1="48" x2="40" y2="60" stroke="#00f2ff" stroke-width="0.4" opacity="0.5"/>
+                    <line x1="50" y1="48" x2="60" y2="60" stroke="#00f2ff" stroke-width="0.4" opacity="0.5"/>
+                </svg>
+            </div>
         </div>
 
         <div class="right-panel">
@@ -159,7 +194,7 @@
 
             <div class="in-box">
                 <div class="input-container">
-                    <input type="text" id="m" placeholder="Напиши что-нибудь..." autocomplete="off">
+                    <input type="text" id="m" placeholder="Напиши Lesiva бро..." autocomplete="off">
                     <div class="btn-group">
                         <button id="mic">🎙️</button>
                         <button id="go">➔</button>
@@ -189,7 +224,6 @@
             box.scrollTop = box.scrollHeight;
 
             try {
-                // НЕ ЗАБУДЬ ЗАМЕНИТЬ НА СВОЙ URL ВОРКЕРА
                 const r = await fetch('https://young-cake-650b.alexeyai2929.workers.dev', { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
@@ -198,7 +232,7 @@
                 const d = await r.json();
                 res.innerHTML = d.answer;
                 history.push({role:'user', content:val}, {role:'assistant', content:d.answer});
-                if(history.length > 8) history = history.slice(-8);
+                if(history.length > 10) history = history.slice(-10);
             } catch(e) { res.innerHTML = 'Бро, проверь связь. Движок не видит сеть.'; }
             box.scrollTop = box.scrollHeight;
         };
@@ -209,8 +243,8 @@
         const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
         if(Speech) {
             const rec = new Speech(); rec.lang = 'ru-RU';
-            rec.onstart = () => micBtn.classList.add('active'); // ВКЛЮЧАЕМ НЕОН ПРИ НАЖАТИИ
-            rec.onend = () => micBtn.classList.remove('active'); // ВЫКЛЮЧАЕМ НЕОН, КАК ДОСЛУШАЛ
+            rec.onstart = () => micBtn.classList.add('active');
+            rec.onend = () => micBtn.classList.remove('active');
             rec.onresult = (e) => send(e.results[0][0].transcript);
             micBtn.onclick = () => rec.start();
         }
