@@ -19,7 +19,7 @@
 
         .wrapper { display: flex; height: 100%; width: 100%; }
 
-        /* ЛЕВАЯ ПАНЕЛЬ - ЛОГО */
+        /* ЛЕВАЯ ПАНЕЛЬ - ЛОГО И МОЗГ */
         .left-panel { 
             flex: 1; 
             display: flex; 
@@ -34,11 +34,26 @@
         .lesiva-logo { 
             font-size: 6vw; 
             font-weight: 900; 
-            color: #00f2ff; 
+            color: #87CEEB; 
             text-transform: uppercase; 
             letter-spacing: 15px; 
-            text-shadow: 0 0 30px rgba(0, 242, 255, 0.4); 
+            text-shadow: 0 0 30px rgba(135, 206, 235, 0.4); 
             text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* ТОТ САМЫЙ SVG МОЗГ */
+        .brain-container {
+            width: 200px; 
+            height: 200px;
+            filter: drop-shadow(0 0 15px rgba(135, 206, 235, 0.6));
+            animation: brainPulse 3s infinite ease-in-out;
+        }
+
+        @keyframes brainPulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
         }
 
         /* ПРАВАЯ ПАНЕЛЬ - ЧАТ */
@@ -47,7 +62,7 @@
             background: #050505; 
             display: flex; 
             flex-direction: column; 
-            border-left: 1px solid #00f2ff22;
+            border-left: 1px solid #1a1a1a;
             height: 100%;
             position: relative;
         }
@@ -55,14 +70,15 @@
         /* МОБИЛЬНАЯ АДАПТАЦИЯ */
         @media (max-width: 768px) {
             .wrapper { flex-direction: column; }
-            .left-panel { flex: none; height: 18vh; width: 100%; border-right: none; border-bottom: 1px solid #1a1a1a; }
-            .right-panel { flex: 1; height: 82vh; width: 100%; }
+            .left-panel { flex: none; height: 25vh; width: 100%; border-right: none; border-bottom: 1px solid #1a1a1a; padding: 10px; }
+            .right-panel { flex: 1; height: 75vh; width: 100%; }
             .lesiva-logo { font-size: 10vw; letter-spacing: 5px; }
+            .brain-container { width: 100px; height: 100px; }
         }
 
         .header { 
-            background: #00f2ff; 
-            color: #000; 
+            background: #111; 
+            color: #87CEEB; 
             padding: 10px 15px; 
             display: flex; 
             justify-content: space-between; 
@@ -70,72 +86,37 @@
             font-weight: 900; 
             font-size: 11px; 
             text-transform: uppercase;
+            border-bottom: 1px solid #1a1a1a;
         }
 
         .reset-btn {
-            background: #000;
-            color: #00f2ff;
-            border: 1px solid #000;
-            padding: 2px 10px;
-            font-size: 10px;
-            cursor: pointer;
-            font-weight: bold;
+            background: transparent; color: #444; border: 1px solid #222;
+            padding: 2px 10px; font-size: 10px; cursor: pointer;
         }
 
         #msgs { 
-            flex: 1; 
-            padding: 20px; 
-            overflow-y: auto; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
-            -webkit-overflow-scrolling: touch;
-            max-width: 900px; 
-            margin: 0 auto;
-            width: 100%;
+            flex: 1; padding: 20px; overflow-y: auto; display: flex; 
+            flex-direction: column; gap: 12px; max-width: 900px; margin: 0 auto; width: 100%;
         }
 
-        .ai { color: #00f2ff; align-self: flex-start; max-width: 90%; font-size: 15px; line-height: 1.5; }
+        .ai { color: #87CEEB; align-self: flex-start; max-width: 90%; font-size: 15px; line-height: 1.5; }
         .user { color: #fff; align-self: flex-end; max-width: 90%; background: #1a1a1a; padding: 10px 15px; border-radius: 10px; font-size: 14px; border: 1px solid #333; }
 
-        /* ИНПУТ */
         .in-box { 
-            flex: none;
-            padding: 15px; 
-            display: flex; 
-            background: #000; 
-            border-top: 1px solid #1a1a1a; 
-            align-items: center;
-            justify-content: center;
+            flex: none; padding: 15px; display: flex; background: #000; border-top: 1px solid #1a1a1a;
             padding-bottom: calc(15px + env(safe-area-inset-bottom));
         }
 
         .input-container {
-            max-width: 850px;
-            width: 100%;
-            display: flex;
-            background: #0a0a0a;
-            border: 1px solid #1a1a1a;
-            border-radius: 12px;
-            padding: 5px 15px;
-            align-items: center;
-            gap: 10px;
+            max-width: 850px; width: 100%; margin: 0 auto; display: flex;
+            background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 12px;
+            padding: 5px 15px; align-items: center; gap: 10px;
         }
 
         input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 16px; height: 45px; }
-
-        .btn-group { display: flex; gap: 15px; align-items: center; }
-        .btn-group button { background: transparent; border: none; color: #444; cursor: pointer; font-size: 24px; transition: 0.3s; }
-        
-        #go { color: #00f2ff !important; }
-
-        /* МИКРОФОН - СВЕЧЕНИЕ КАК У ЛОГО */
-        #mic.active { 
-            color: #00f2ff !important; 
-            text-shadow: 0 0 15px rgba(0, 242, 255, 0.8); /* Внутреннее свечение */
-            filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.6)); /* Внешний ореол */
-            transform: scale(1.1);
-        }
+        .btn-group button { background: transparent; border: none; color: #444; cursor: pointer; font-size: 24px; }
+        #go { color: #87CEEB !important; }
+        #mic.active { color: #87CEEB !important; }
     </style>
 </head>
 <body>
@@ -143,23 +124,40 @@
     <div class="wrapper">
         <div class="left-panel">
             <div class="lesiva-logo">LESIVA</div>
+            
+            <div class="brain-container">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 15 C30 15, 15 30, 15 50 C15 70, 30 85, 50 85 M50 15 C70 15, 85 30, 85 50 C85 70, 70 85, 50 85" stroke="#87CEEB" stroke-width="1.2" fill="none" opacity="0.3"/>
+                    <path d="M50 25 C38 25, 28 35, 28 48 C28 60, 38 70, 50 70 M50 25 C62 25, 72 35, 72 48 C72 60, 62 70, 50 70" stroke="#87CEEB" stroke-width="1.8" fill="none" opacity="0.6"/>
+                    <path d="M50 35 C45 35, 40 40, 40 48 C40 55, 45 60, 50 60 M50 35 C55 35, 60 40, 60 48 C60 55, 55 60, 50 60" stroke="#87CEEB" stroke-width="2.2" fill="none"/>
+                    <circle cx="50" cy="48" r="2.5" fill="#fff">
+                        <animate attributeName="opacity" values="1;0.2;1" dur="2s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="35" cy="40" r="1.2" fill="#87CEEB"/>
+                    <circle cx="65" cy="40" r="1.2" fill="#87CEEB"/>
+                    <circle cx="40" cy="60" r="1.2" fill="#87CEEB"/>
+                    <circle cx="60" cy="60" r="1.2" fill="#87CEEB"/>
+                    <line x1="50" y1="48" x2="35" y2="40" stroke="#87CEEB" stroke-width="0.4" opacity="0.5"/>
+                    <line x1="50" y1="48" x2="65" y2="40" stroke="#87CEEB" stroke-width="0.4" opacity="0.5"/>
+                    <line x1="50" y1="48" x2="40" y2="60" stroke="#87CEEB" stroke-width="0.4" opacity="0.5"/>
+                    <line x1="50" y1="48" x2="60" y2="60" stroke="#87CEEB" stroke-width="0.4" opacity="0.5"/>
+                </svg>
+            </div>
         </div>
 
         <div class="right-panel">
             <div class="header">
-                <span>TERMINAL</span>
+                <span>LESIVA ENGINE v3.0 | GLOBAL SYSTEM</span>
                 <button class="reset-btn" onclick="resetChat()">Reset</button>
             </div>
             
             <div id="msgs">
-                <div class="ai">Добро пожаловать в мой ИИ мир! Я — цифровой Lesiva, твой проводник и помощник во всём. Мой движок LESIVA ENGINE v3.0 Global заряжен на максимум и готов к созиданию.
-
-Прежде чем мы начнем — расскажи немного о себе: как мне лучше к тебе обращаться и какой стиль общения тебе ближе? 🦾🎹🚀</div>
+                <div class="ai">Система перезагружена. Мозговой центр LESIVA активен. Я готов к твоим задачам, брат. На связи! 🦾🎹🚀</div>
             </div>
 
             <div class="in-box">
                 <div class="input-container">
-                    <input type="text" id="m" placeholder="Напиши что-нибудь..." autocomplete="off">
+                    <input type="text" id="m" placeholder="Напиши Lesiva бро..." autocomplete="off">
                     <div class="btn-group">
                         <button id="mic">🎙️</button>
                         <button id="go">➔</button>
@@ -175,7 +173,7 @@
 
         const resetChat = () => {
             history = [];
-            box.innerHTML = '<div class="ai">Память очищена. Я готов, брат.</div>';
+            box.innerHTML = '<div class="ai">Память очищена. Движок готов к работе.</div>';
         };
 
         const send = async (text = null) => {
@@ -185,11 +183,10 @@
             const u = document.createElement('div'); u.className = 'user'; u.innerText = val; box.appendChild(u);
             i.value = ''; box.scrollTop = box.scrollHeight;
 
-            const res = document.createElement('div'); res.className = 'ai'; res.innerHTML = '<i>Обработка...</i>'; box.appendChild(res);
+            const res = document.createElement('div'); res.className = 'ai'; res.innerHTML = '<i>Синхронизация...</i>'; box.appendChild(res);
             box.scrollTop = box.scrollHeight;
 
             try {
-                // НЕ ЗАБУДЬ ЗАМЕНИТЬ НА СВОЙ URL ВОРКЕРА
                 const r = await fetch('https://young-cake-650b.alexeyai2929.workers.dev', { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
@@ -198,8 +195,8 @@
                 const d = await r.json();
                 res.innerHTML = d.answer;
                 history.push({role:'user', content:val}, {role:'assistant', content:d.answer});
-                if(history.length > 8) history = history.slice(-8);
-            } catch(e) { res.innerHTML = 'Бро, проверь связь. Движок не видит сеть.'; }
+                if(history.length > 10) history = history.slice(-10);
+            } catch(e) { res.innerHTML = 'Бро, нет связи с мозговым центром.'; }
             box.scrollTop = box.scrollHeight;
         };
 
@@ -209,8 +206,8 @@
         const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
         if(Speech) {
             const rec = new Speech(); rec.lang = 'ru-RU';
-            rec.onstart = () => micBtn.classList.add('active'); // ВКЛЮЧАЕМ НЕОН ПРИ НАЖАТИИ
-            rec.onend = () => micBtn.classList.remove('active'); // ВЫКЛЮЧАЕМ НЕОН, КАК ДОСЛУШАЛ
+            rec.onstart = () => micBtn.classList.add('active');
+            rec.onend = () => micBtn.classList.remove('active');
             rec.onresult = (e) => send(e.results[0][0].transcript);
             micBtn.onclick = () => rec.start();
         }
