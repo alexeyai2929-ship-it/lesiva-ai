@@ -19,7 +19,7 @@
 
         .wrapper { display: flex; height: 100%; width: 100%; }
 
-        /* ЛЕВАЯ ПАНЕЛЬ */
+        /* ЛЕВАЯ ПАНЕЛЬ - ЛОГО */
         .left-panel { 
             flex: 1; 
             display: flex; 
@@ -39,42 +39,9 @@
             letter-spacing: 15px; 
             text-shadow: 0 0 30px rgba(0, 242, 255, 0.4); 
             text-align: center;
-            margin-bottom: 20px;
         }
 
-        /* КОНТЕЙНЕР РОБОТА */
-        .robot-container {
-            width: 250px; 
-            height: 250px;
-            filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.6));
-        }
-
-        /* АНИМАЦИЯ ВЗГЛЯДА */
-        .pupils {
-            animation: lookAround 8s infinite ease-in-out;
-        }
-
-        @keyframes lookAround {
-            0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(3px, -1px); }
-            50% { transform: translate(-3px, 1px); }
-            75% { transform: translate(0, 2px); }
-        }
-
-        /* АНИМАЦИЯ МОРГАНИЯ */
-        .eyelids {
-            transform-origin: center;
-            transform: scaleY(0);
-            animation: blinkEyes 5s infinite;
-            fill: #000;
-        }
-
-        @keyframes blinkEyes {
-            0%, 90%, 100% { transform: scaleY(0); }
-            92% { transform: scaleY(1.2); }
-        }
-
-        /* ПРАВАЯ ПАНЕЛЬ */
+        /* ПРАВАЯ ПАНЕЛЬ - ЧАТ */
         .right-panel { 
             flex: 1; 
             background: #050505; 
@@ -85,12 +52,12 @@
             position: relative;
         }
 
+        /* МОБИЛЬНАЯ АДАПТАЦИЯ */
         @media (max-width: 768px) {
             .wrapper { flex-direction: column; }
-            .left-panel { flex: none; height: 25vh; width: 100%; border-right: none; border-bottom: 1px solid #1a1a1a; }
-            .right-panel { flex: 1; height: 75vh; width: 100%; }
+            .left-panel { flex: none; height: 18vh; width: 100%; border-right: none; border-bottom: 1px solid #1a1a1a; }
+            .right-panel { flex: 1; height: 82vh; width: 100%; }
             .lesiva-logo { font-size: 10vw; letter-spacing: 5px; }
-            .robot-container { width: 120px; height: 120px; }
         }
 
         .header { 
@@ -105,7 +72,15 @@
             text-transform: uppercase;
         }
 
-        .reset-btn { background: #000; color: #00f2ff; border: 1px solid #000; padding: 2px 10px; font-size: 10px; cursor: pointer; }
+        .reset-btn {
+            background: #000;
+            color: #00f2ff;
+            border: 1px solid #000;
+            padding: 2px 10px;
+            font-size: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
 
         #msgs { 
             flex: 1; 
@@ -114,6 +89,7 @@
             display: flex; 
             flex-direction: column; 
             gap: 12px; 
+            -webkit-overflow-scrolling: touch;
             max-width: 900px; 
             margin: 0 auto;
             width: 100%;
@@ -122,19 +98,21 @@
         .ai { color: #00f2ff; align-self: flex-start; max-width: 90%; font-size: 15px; line-height: 1.5; }
         .user { color: #fff; align-self: flex-end; max-width: 90%; background: #1a1a1a; padding: 10px 15px; border-radius: 10px; font-size: 14px; border: 1px solid #333; }
 
+        /* ИНПУТ */
         .in-box { 
             flex: none;
             padding: 15px; 
             display: flex; 
             background: #000; 
             border-top: 1px solid #1a1a1a; 
+            align-items: center;
+            justify-content: center;
             padding-bottom: calc(15px + env(safe-area-inset-bottom));
         }
 
         .input-container {
             max-width: 850px;
             width: 100%;
-            margin: 0 auto;
             display: flex;
             background: #0a0a0a;
             border: 1px solid #1a1a1a;
@@ -145,8 +123,19 @@
         }
 
         input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 16px; height: 45px; }
-        .btn-group button { background: transparent; border: none; color: #444; cursor: pointer; font-size: 24px; }
+
+        .btn-group { display: flex; gap: 15px; align-items: center; }
+        .btn-group button { background: transparent; border: none; color: #444; cursor: pointer; font-size: 24px; transition: 0.3s; }
+        
         #go { color: #00f2ff !important; }
+
+        /* МИКРОФОН - СВЕЧЕНИЕ КАК У ЛОГО */
+        #mic.active { 
+            color: #00f2ff !important; 
+            text-shadow: 0 0 15px rgba(0, 242, 255, 0.8); /* Внутреннее свечение */
+            filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.6)); /* Внешний ореол */
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
@@ -154,41 +143,23 @@
     <div class="wrapper">
         <div class="left-panel">
             <div class="lesiva-logo">LESIVA</div>
-            
-            <div class="robot-container">
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M30 30 L70 30 L75 55 L50 85 L25 55 Z" stroke="#00f2ff" stroke-width="1.5" fill="none" />
-                    <path d="M35 35 L65 35 L68 53 L50 78 L32 53 Z" stroke="#00f2ff" stroke-width="0.5" fill="none" opacity="0.4" />
-                    
-                    <path d="M36 45 L46 45 L48 52 L38 52 Z" stroke="#00f2ff" stroke-width="1" fill="none" />
-                    <path d="M54 45 L64 45 L62 52 L52 52 Z" stroke="#00f2ff" stroke-width="1" fill="none" />
-                    
-                    <g class="pupils">
-                        <circle cx="41" cy="48.5" r="1.5" fill="#fff" />
-                        <circle cx="58" cy="48.5" r="1.5" fill="#fff" />
-                    </g>
-                    
-                    <rect x="35" y="44" width="14" height="10" class="eyelids" />
-                    <rect x="51" y="44" width="14" height="10" class="eyelids" />
-                    
-                    <path d="M50 30 L50 20" stroke="#00f2ff" stroke-width="1" />
-                    <circle cx="50" cy="18" r="1.5" fill="#00f2ff" />
-                    <path d="M40 70 L60 70" stroke="#00f2ff" stroke-width="0.8" opacity="0.6" />
-                </svg>
-            </div>
         </div>
 
         <div class="right-panel">
             <div class="header">
-                <span>TERMINAL v3.0</span>
+                <span>TERMINAL</span>
                 <button class="reset-btn" onclick="resetChat()">Reset</button>
             </div>
+            
             <div id="msgs">
-                <div class="ai">Система активна. Я — цифровой Lesiva. Твой робот-проводник готов к работе. Напиши что-нибудь, проверим связь! 🦾🤖🚀</div>
+                <div class="ai">Добро пожаловать в мой ИИ мир! Я — цифровой Lesiva, твой проводник и помощник во всём. Мой движок LESIVA ENGINE v3.0 Global заряжен на максимум и готов к созиданию.
+
+Прежде чем мы начнем — расскажи немного о себе: как мне лучше к тебе обращаться и какой стиль общения тебе ближе? 🦾🎹🚀</div>
             </div>
+
             <div class="in-box">
                 <div class="input-container">
-                    <input type="text" id="m" placeholder="Напиши Lesiva бро..." autocomplete="off">
+                    <input type="text" id="m" placeholder="Напиши что-нибудь..." autocomplete="off">
                     <div class="btn-group">
                         <button id="mic">🎙️</button>
                         <button id="go">➔</button>
@@ -204,7 +175,7 @@
 
         const resetChat = () => {
             history = [];
-            box.innerHTML = '<div class="ai">Память очищена. Робот перезагружен.</div>';
+            box.innerHTML = '<div class="ai">Память очищена. Я готов, брат.</div>';
         };
 
         const send = async (text = null) => {
@@ -214,10 +185,11 @@
             const u = document.createElement('div'); u.className = 'user'; u.innerText = val; box.appendChild(u);
             i.value = ''; box.scrollTop = box.scrollHeight;
 
-            const res = document.createElement('div'); res.className = 'ai'; res.innerHTML = '<i>Обработка данных...</i>'; box.appendChild(res);
+            const res = document.createElement('div'); res.className = 'ai'; res.innerHTML = '<i>Обработка...</i>'; box.appendChild(res);
             box.scrollTop = box.scrollHeight;
 
             try {
+                // НЕ ЗАБУДЬ ЗАМЕНИТЬ НА СВОЙ URL ВОРКЕРА
                 const r = await fetch('https://young-cake-650b.alexeyai2929.workers.dev', { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
@@ -226,8 +198,8 @@
                 const d = await r.json();
                 res.innerHTML = d.answer;
                 history.push({role:'user', content:val}, {role:'assistant', content:d.answer});
-                if(history.length > 10) history = history.slice(-10);
-            } catch(e) { res.innerHTML = 'Ошибка связи. Робот офлайн.'; }
+                if(history.length > 8) history = history.slice(-8);
+            } catch(e) { res.innerHTML = 'Бро, проверь связь. Движок не видит сеть.'; }
             box.scrollTop = box.scrollHeight;
         };
 
@@ -237,8 +209,8 @@
         const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
         if(Speech) {
             const rec = new Speech(); rec.lang = 'ru-RU';
-            rec.onstart = () => micBtn.style.color = '#00f2ff';
-            rec.onend = () => micBtn.style.color = '#444';
+            rec.onstart = () => micBtn.classList.add('active'); // ВКЛЮЧАЕМ НЕОН ПРИ НАЖАТИИ
+            rec.onend = () => micBtn.classList.remove('active'); // ВЫКЛЮЧАЕМ НЕОН, КАК ДОСЛУШАЛ
             rec.onresult = (e) => send(e.results[0][0].transcript);
             micBtn.onclick = () => rec.start();
         }
