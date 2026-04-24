@@ -19,7 +19,7 @@
 
         .wrapper { display: flex; height: 100%; width: 100%; }
 
-        /* ЛЕВАЯ ПАНЕЛЬ */
+        /* ЛЕВАЯ ПАНЕЛЬ - ЦИФРОВОЙ ДВОЙНИК */
         .left-panel { 
             flex: 1; 
             display: flex; 
@@ -32,49 +32,57 @@
         }
 
         .lesiva-logo { 
-            font-size: 6vw; 
+            font-size: 5vw; 
             font-weight: 900; 
             color: #00f2ff; 
             text-transform: uppercase; 
-            letter-spacing: 15px; 
+            letter-spacing: 12px; 
             text-shadow: 0 0 30px rgba(0, 242, 255, 0.4); 
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
-        /* КОНТЕЙНЕР РОБОТА */
-        .robot-container {
-            width: 250px; 
-            height: 250px;
-            filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.6));
+        /* КОНТЕЙНЕР КИБОРГА (ТВОЕ ЛИЦО) */
+        .cyber-lesiva {
+            width: 280px;
+            height: 350px;
+            filter: drop-shadow(0 0 20px rgba(0, 242, 255, 0.5));
+            position: relative;
         }
 
         /* АНИМАЦИЯ ВЗГЛЯДА */
-        .pupils {
-            animation: lookAround 8s infinite ease-in-out;
+        .eye-pupils {
+            animation: gaze 10s infinite ease-in-out;
         }
-
-        @keyframes lookAround {
+        @keyframes gaze {
             0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(3px, -1px); }
-            50% { transform: translate(-3px, 1px); }
-            75% { transform: translate(0, 2px); }
+            20% { transform: translate(2px, -1px); }
+            50% { transform: translate(-2px, 1px); }
+            80% { transform: translate(1px, 2px); }
         }
 
         /* АНИМАЦИЯ МОРГАНИЯ */
         .eyelids {
             transform-origin: center;
             transform: scaleY(0);
-            animation: blinkEyes 5s infinite;
+            animation: blink 6s infinite;
             fill: #000;
         }
-
-        @keyframes blinkEyes {
+        @keyframes blink {
             0%, 90%, 100% { transform: scaleY(0); }
-            92% { transform: scaleY(1.2); }
+            92%, 95% { transform: scaleY(1); }
         }
 
-        /* ПРАВАЯ ПАНЕЛЬ */
+        /* ПУЛЬСАЦИЯ НЕОНОВЫХ СХЕМ НА ЛИЦЕ */
+        .circuits {
+            animation: pulseCircuit 3s infinite alternate;
+        }
+        @keyframes pulseCircuit {
+            from { opacity: 0.3; filter: blur(0.5px); }
+            to { opacity: 1; filter: blur(1px); }
+        }
+
+        /* ПРАВАЯ ПАНЕЛЬ - ЧАТ */
         .right-panel { 
             flex: 1; 
             background: #050505; 
@@ -87,10 +95,10 @@
 
         @media (max-width: 768px) {
             .wrapper { flex-direction: column; }
-            .left-panel { flex: none; height: 25vh; width: 100%; border-right: none; border-bottom: 1px solid #1a1a1a; }
-            .right-panel { flex: 1; height: 75vh; width: 100%; }
-            .lesiva-logo { font-size: 10vw; letter-spacing: 5px; }
-            .robot-container { width: 120px; height: 120px; }
+            .left-panel { flex: none; height: 35vh; width: 100%; border-right: none; border-bottom: 1px solid #1a1a1a; padding: 10px; }
+            .right-panel { flex: 1; height: 65vh; width: 100%; }
+            .lesiva-logo { font-size: 8vw; letter-spacing: 5px; margin-bottom: 10px; }
+            .cyber-lesiva { width: 150px; height: 180px; }
         }
 
         .header { 
@@ -105,48 +113,34 @@
             text-transform: uppercase;
         }
 
-        .reset-btn { background: #000; color: #00f2ff; border: 1px solid #000; padding: 2px 10px; font-size: 10px; cursor: pointer; }
+        .reset-btn {
+            background: #000; color: #00f2ff; border: 1px solid #000;
+            padding: 2px 10px; font-size: 10px; cursor: pointer;
+        }
 
         #msgs { 
-            flex: 1; 
-            padding: 20px; 
-            overflow-y: auto; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
-            max-width: 900px; 
-            margin: 0 auto;
-            width: 100%;
+            flex: 1; padding: 20px; overflow-y: auto; display: flex; 
+            flex-direction: column; gap: 12px; max-width: 900px; margin: 0 auto; width: 100%;
         }
 
         .ai { color: #00f2ff; align-self: flex-start; max-width: 90%; font-size: 15px; line-height: 1.5; }
         .user { color: #fff; align-self: flex-end; max-width: 90%; background: #1a1a1a; padding: 10px 15px; border-radius: 10px; font-size: 14px; border: 1px solid #333; }
 
         .in-box { 
-            flex: none;
-            padding: 15px; 
-            display: flex; 
-            background: #000; 
-            border-top: 1px solid #1a1a1a; 
+            flex: none; padding: 15px; display: flex; background: #000; border-top: 1px solid #1a1a1a;
             padding-bottom: calc(15px + env(safe-area-inset-bottom));
         }
 
         .input-container {
-            max-width: 850px;
-            width: 100%;
-            margin: 0 auto;
-            display: flex;
-            background: #0a0a0a;
-            border: 1px solid #1a1a1a;
-            border-radius: 12px;
-            padding: 5px 15px;
-            align-items: center;
-            gap: 10px;
+            max-width: 850px; width: 100%; margin: 0 auto; display: flex;
+            background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 12px;
+            padding: 5px 15px; align-items: center; gap: 10px;
         }
 
         input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 16px; height: 45px; }
         .btn-group button { background: transparent; border: none; color: #444; cursor: pointer; font-size: 24px; }
         #go { color: #00f2ff !important; }
+        #mic.active { color: #00f2ff !important; text-shadow: 0 0 10px #00f2ff; }
     </style>
 </head>
 <body>
@@ -155,40 +149,47 @@
         <div class="left-panel">
             <div class="lesiva-logo">LESIVA</div>
             
-            <div class="robot-container">
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M30 30 L70 30 L75 55 L50 85 L25 55 Z" stroke="#00f2ff" stroke-width="1.5" fill="none" />
-                    <path d="M35 35 L65 35 L68 53 L50 78 L32 53 Z" stroke="#00f2ff" stroke-width="0.5" fill="none" opacity="0.4" />
+            <div class="cyber-lesiva">
+                <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M25 40 Q25 85 50 105 Q75 85 75 40 Q75 20 50 20 Q25 20 25 40" fill="none" stroke="#00f2ff" stroke-width="1" />
                     
-                    <path d="M36 45 L46 45 L48 52 L38 52 Z" stroke="#00f2ff" stroke-width="1" fill="none" />
-                    <path d="M54 45 L64 45 L62 52 L52 52 Z" stroke="#00f2ff" stroke-width="1" fill="none" />
-                    
-                    <g class="pupils">
-                        <circle cx="41" cy="48.5" r="1.5" fill="#fff" />
-                        <circle cx="58" cy="48.5" r="1.5" fill="#fff" />
+                    <g stroke="#fff" stroke-width="0.6" opacity="0.8" fill="none">
+                        <path d="M25 42 Q20 30 35 15 M30 35 Q30 10 50 10 M75 42 Q80 30 65 15 M70 35 Q70 10 50 10" stroke="#00f2ff" stroke-width="1.5" />
+                        <path d="M40 12 L45 25 M55 12 L50 25 M30 20 L40 28" opacity="0.5" /> <path d="M35 15 Q50 5 65 15" stroke-width="2" stroke="#fff" /> </g>
+
+                    <g class="eye-pupils">
+                        <ellipse cx="40" cy="50" rx="6" ry="3.5" stroke="#00f2ff" fill="none" stroke-width="0.8" />
+                        <ellipse cx="60" cy="50" rx="6" ry="3.5" stroke="#00f2ff" fill="none" stroke-width="0.8" />
+                        <circle cx="40" cy="50" r="1.5" fill="#fff" /> <circle cx="60" cy="50" r="1.5" fill="#fff" /> </g>
+
+                    <rect x="33" y="45" width="14" height="10" class="eyelids" />
+                    <rect x="53" y="45" width="14" height="10" class="eyelids" />
+
+                    <path d="M48 55 L50 68 L52 55" stroke="#00f2ff" stroke-width="0.5" fill="none" opacity="0.6" />
+                    <path d="M42 80 Q50 85 58 80" stroke="#00f2ff" stroke-width="1" fill="none" /> <g class="circuits" stroke="#00f2ff" stroke-width="0.3" fill="none">
+                        <path d="M75 50 L85 50 L88 40" />
+                        <circle cx="88" cy="40" r="0.8" fill="#00f2ff" />
+                        <path d="M25 60 L15 60 L12 75" />
+                        <circle cx="12" cy="75" r="0.8" fill="#00f2ff" />
+                        <path d="M50 105 L50 115" opacity="0.5" />
                     </g>
-                    
-                    <rect x="35" y="44" width="14" height="10" class="eyelids" />
-                    <rect x="51" y="44" width="14" height="10" class="eyelids" />
-                    
-                    <path d="M50 30 L50 20" stroke="#00f2ff" stroke-width="1" />
-                    <circle cx="50" cy="18" r="1.5" fill="#00f2ff" />
-                    <path d="M40 70 L60 70" stroke="#00f2ff" stroke-width="0.8" opacity="0.6" />
                 </svg>
             </div>
         </div>
 
         <div class="right-panel">
             <div class="header">
-                <span>TERMINAL v3.0</span>
+                <span>LESIVA ENGINE v3.0 | КИБОРГ-ИНТЕРФЕЙС</span>
                 <button class="reset-btn" onclick="resetChat()">Reset</button>
             </div>
+            
             <div id="msgs">
-                <div class="ai">Система активна. Я — цифровой Lesiva. Твой робот-проводник готов к работе. Напиши что-нибудь, проверим связь! 🦾🤖🚀</div>
+                <div class="ai">Система синхронизирована. Я — твое цифровое воплощение. Твои черты, твой стиль, мой интеллект. Мы готовы захватить этот мир, брат. На связи! 🦾🎹🚀</div>
             </div>
+
             <div class="in-box">
                 <div class="input-container">
-                    <input type="text" id="m" placeholder="Напиши Lesiva бро..." autocomplete="off">
+                    <input type="text" id="m" placeholder="Напиши мне, бро..." autocomplete="off">
                     <div class="btn-group">
                         <button id="mic">🎙️</button>
                         <button id="go">➔</button>
@@ -204,7 +205,7 @@
 
         const resetChat = () => {
             history = [];
-            box.innerHTML = '<div class="ai">Память очищена. Робот перезагружен.</div>';
+            box.innerHTML = '<div class="ai">Память очищена. Я снова в строю.</div>';
         };
 
         const send = async (text = null) => {
@@ -214,7 +215,7 @@
             const u = document.createElement('div'); u.className = 'user'; u.innerText = val; box.appendChild(u);
             i.value = ''; box.scrollTop = box.scrollHeight;
 
-            const res = document.createElement('div'); res.className = 'ai'; res.innerHTML = '<i>Обработка данных...</i>'; box.appendChild(res);
+            const res = document.createElement('div'); res.className = 'ai'; res.innerHTML = '<i>Анализ нейронных связей...</i>'; box.appendChild(res);
             box.scrollTop = box.scrollHeight;
 
             try {
@@ -227,7 +228,7 @@
                 res.innerHTML = d.answer;
                 history.push({role:'user', content:val}, {role:'assistant', content:d.answer});
                 if(history.length > 10) history = history.slice(-10);
-            } catch(e) { res.innerHTML = 'Ошибка связи. Робот офлайн.'; }
+            } catch(e) { res.innerHTML = 'Бро, сеть упала. Подключи кабель!'; }
             box.scrollTop = box.scrollHeight;
         };
 
@@ -237,8 +238,8 @@
         const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
         if(Speech) {
             const rec = new Speech(); rec.lang = 'ru-RU';
-            rec.onstart = () => micBtn.style.color = '#00f2ff';
-            rec.onend = () => micBtn.style.color = '#444';
+            rec.onstart = () => micBtn.classList.add('active');
+            rec.onend = () => micBtn.classList.remove('active');
             rec.onresult = (e) => send(e.results[0][0].transcript);
             micBtn.onclick = () => rec.start();
         }
