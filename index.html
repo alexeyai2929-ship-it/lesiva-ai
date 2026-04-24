@@ -19,7 +19,7 @@
 
         .wrapper { display: flex; height: 100%; width: 100%; }
 
-        /* ЛЕВАЯ ПАНЕЛЬ - ЛОГО И МОЗГ */
+        /* ЛЕВАЯ ПАНЕЛЬ */
         .left-panel { 
             flex: 1; 
             display: flex; 
@@ -32,31 +32,30 @@
         }
 
         .lesiva-logo { 
-            font-size: 6vw; 
+            font-size: 5vw; 
             font-weight: 900; 
             color: #87CEEB; 
             text-transform: uppercase; 
-            letter-spacing: 15px; 
-            text-shadow: 0 0 30px rgba(135, 206, 235, 0.4); 
+            letter-spacing: 12px; 
+            text-shadow: 0 0 20px rgba(135, 206, 235, 0.4); 
             text-align: center;
             margin-bottom: 20px;
         }
 
-        /* ТОТ САМЫЙ SVG МОЗГ */
+        /* КОНТЕЙНЕР МОЗГА */
         .brain-container {
-            width: 200px; 
-            height: 200px;
-            filter: drop-shadow(0 0 15px rgba(135, 206, 235, 0.6));
-            animation: brainPulse 3s infinite ease-in-out;
+            width: 220px;
+            height: 220px;
+            filter: drop-shadow(0 0 15px rgba(135, 206, 235, 0.5));
+            animation: brainFloat 4s infinite ease-in-out;
         }
 
-        @keyframes brainPulse {
-            0% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.05); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.8; }
+        @keyframes brainFloat {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+            50% { transform: translateY(-10px) scale(1.05); opacity: 1; }
         }
 
-        /* ПРАВАЯ ПАНЕЛЬ - ЧАТ */
+        /* ПРАВАЯ ПАНЕЛЬ */
         .right-panel { 
             flex: 1; 
             background: #050505; 
@@ -67,13 +66,12 @@
             position: relative;
         }
 
-        /* МОБИЛЬНАЯ АДАПТАЦИЯ */
         @media (max-width: 768px) {
             .wrapper { flex-direction: column; }
             .left-panel { flex: none; height: 25vh; width: 100%; border-right: none; border-bottom: 1px solid #1a1a1a; padding: 10px; }
             .right-panel { flex: 1; height: 75vh; width: 100%; }
-            .lesiva-logo { font-size: 10vw; letter-spacing: 5px; }
-            .brain-container { width: 100px; height: 100px; }
+            .lesiva-logo { font-size: 8vw; letter-spacing: 5px; }
+            .brain-container { width: 90px; height: 90px; }
         }
 
         .header { 
@@ -116,7 +114,7 @@
         input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 16px; height: 45px; }
         .btn-group button { background: transparent; border: none; color: #444; cursor: pointer; font-size: 24px; }
         #go { color: #87CEEB !important; }
-        #mic.active { color: #87CEEB !important; }
+        #mic.active { color: #87CEEB !important; text-shadow: 0 0 10px #87CEEB; }
     </style>
 </head>
 <body>
@@ -127,34 +125,36 @@
             
             <div class="brain-container">
                 <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M50 15 C30 15, 15 30, 15 50 C15 70, 30 85, 50 85 M50 15 C70 15, 85 30, 85 50 C85 70, 70 85, 50 85" stroke="#87CEEB" stroke-width="1.2" fill="none" opacity="0.3"/>
-                    <path d="M50 25 C38 25, 28 35, 28 48 C28 60, 38 70, 50 70 M50 25 C62 25, 72 35, 72 48 C72 60, 62 70, 50 70" stroke="#87CEEB" stroke-width="1.8" fill="none" opacity="0.6"/>
-                    <path d="M50 35 C45 35, 40 40, 40 48 C40 55, 45 60, 50 60 M50 35 C55 35, 60 40, 60 48 C60 55, 55 60, 50 60" stroke="#87CEEB" stroke-width="2.2" fill="none"/>
-                    <circle cx="50" cy="48" r="2.5" fill="#fff">
-                        <animate attributeName="opacity" values="1;0.2;1" dur="2s" repeatCount="indefinite" />
+                    <path d="M50 15 C30 15, 15 30, 15 50 C15 70, 30 85, 50 85 M50 15 C70 15, 85 30, 85 50 C85 70, 70 85, 50 85" stroke="#87CEEB" stroke-width="1" fill="none" opacity="0.3"/>
+                    
+                    <path d="M50 25 C35 25, 25 35, 25 50 C25 65, 35 75, 50 75 M50 25 C65 25, 75 35, 75 50 C75 65, 65 75, 50 75" stroke="#87CEEB" stroke-width="1.5" fill="none" opacity="0.7"/>
+                    
+                    <circle cx="50" cy="50" r="4" fill="#fff">
+                        <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite" />
+                        <animate attributeName="r" values="4;5;4" dur="2s" repeatCount="indefinite" />
                     </circle>
-                    <circle cx="35" cy="40" r="1.2" fill="#87CEEB"/>
-                    <circle cx="65" cy="40" r="1.2" fill="#87CEEB"/>
-                    <circle cx="40" cy="60" r="1.2" fill="#87CEEB"/>
-                    <circle cx="60" cy="60" r="1.2" fill="#87CEEB"/>
-                    <line x1="50" y1="48" x2="35" y2="40" stroke="#87CEEB" stroke-width="0.4" opacity="0.5"/>
-                    <line x1="50" y1="48" x2="65" y2="40" stroke="#87CEEB" stroke-width="0.4" opacity="0.5"/>
-                    <line x1="50" y1="48" x2="40" y2="60" stroke="#87CEEB" stroke-width="0.4" opacity="0.5"/>
-                    <line x1="50" y1="48" x2="60" y2="60" stroke="#87CEEB" stroke-width="0.4" opacity="0.5"/>
+                    
+                    <circle cx="35" cy="40" r="1.5" fill="#87CEEB"/>
+                    <circle cx="65" cy="40" r="1.5" fill="#87CEEB"/>
+                    <circle cx="40" cy="65" r="1.5" fill="#87CEEB"/>
+                    <circle cx="60" cy="65" r="1.5" fill="#87CEEB"/>
+                    
+                    <line x1="50" y1="50" x2="35" y2="40" stroke="#87CEEB" stroke-width="0.5" opacity="0.5"/>
+                    <line x1="50" y1="50" x2="65" y2="40" stroke="#87CEEB" stroke-width="0.5" opacity="0.5"/>
+                    <line x1="50" y1="50" x2="40" y2="65" stroke="#87CEEB" stroke-width="0.5" opacity="0.5"/>
+                    <line x1="50" y1="50" x2="60" y2="65" stroke="#87CEEB" stroke-width="0.5" opacity="0.5"/>
                 </svg>
             </div>
         </div>
 
         <div class="right-panel">
             <div class="header">
-                <span>LESIVA ENGINE v3.0 | GLOBAL SYSTEM</span>
+                <span>LESIVA ENGINE v3.0 | BRAIN INTERFACE</span>
                 <button class="reset-btn" onclick="resetChat()">Reset</button>
             </div>
-            
             <div id="msgs">
-                <div class="ai">Система перезагружена. Мозговой центр LESIVA активен. Я готов к твоим задачам, брат. На связи! 🦾🎹🚀</div>
+                <div class="ai">Система переключена на классический интерфейс. Ядро LESIVA ENGINE активно. Как я могу помочь тебе сегодня, брат? 🦾🎹🚀</div>
             </div>
-
             <div class="in-box">
                 <div class="input-container">
                     <input type="text" id="m" placeholder="Напиши Lesiva бро..." autocomplete="off">
@@ -173,7 +173,7 @@
 
         const resetChat = () => {
             history = [];
-            box.innerHTML = '<div class="ai">Память очищена. Движок готов к работе.</div>';
+            box.innerHTML = '<div class="ai">Память очищена. Я готов к новым задачам.</div>';
         };
 
         const send = async (text = null) => {
@@ -183,7 +183,7 @@
             const u = document.createElement('div'); u.className = 'user'; u.innerText = val; box.appendChild(u);
             i.value = ''; box.scrollTop = box.scrollHeight;
 
-            const res = document.createElement('div'); res.className = 'ai'; res.innerHTML = '<i>Синхронизация...</i>'; box.appendChild(res);
+            const res = document.createElement('div'); res.className = 'ai'; res.innerHTML = '<i>Обработка нейронов...</i>'; box.appendChild(res);
             box.scrollTop = box.scrollHeight;
 
             try {
@@ -196,7 +196,7 @@
                 res.innerHTML = d.answer;
                 history.push({role:'user', content:val}, {role:'assistant', content:d.answer});
                 if(history.length > 10) history = history.slice(-10);
-            } catch(e) { res.innerHTML = 'Бро, нет связи с мозговым центром.'; }
+            } catch(e) { res.innerHTML = 'Брат, похоже связь оборвалась. Проверь интернет.'; }
             box.scrollTop = box.scrollHeight;
         };
 
