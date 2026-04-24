@@ -42,7 +42,6 @@
             margin-bottom: 20px;
         }
 
-        /* КОНТЕЙНЕР МОЗГА */
         .brain-container {
             width: 220px;
             height: 220px;
@@ -87,10 +86,7 @@
             border-bottom: 1px solid #1a1a1a;
         }
 
-        .reset-btn {
-            background: transparent; color: #444; border: 1px solid #222;
-            padding: 2px 10px; font-size: 10px; cursor: pointer;
-        }
+        .reset-btn { background: transparent; color: #444; border: 1px solid #222; padding: 2px 10px; font-size: 10px; cursor: pointer; }
 
         #msgs { 
             flex: 1; padding: 20px; overflow-y: auto; display: flex; 
@@ -99,6 +95,9 @@
 
         .ai { color: #87CEEB; align-self: flex-start; max-width: 90%; font-size: 15px; line-height: 1.5; }
         .user { color: #fff; align-self: flex-end; max-width: 90%; background: #1a1a1a; padding: 10px 15px; border-radius: 10px; font-size: 14px; border: 1px solid #333; }
+
+        .typing::after { content: '|'; animation: blinkCursor 0.8s infinite; margin-left: 2px; }
+        @keyframes blinkCursor { 50% { opacity: 0; } }
 
         .in-box { 
             flex: none; padding: 15px; display: flex; background: #000; border-top: 1px solid #1a1a1a;
@@ -126,19 +125,9 @@
             <div class="brain-container">
                 <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                     <path d="M50 15 C30 15, 15 30, 15 50 C15 70, 30 85, 50 85 M50 15 C70 15, 85 30, 85 50 C85 70, 70 85, 50 85" stroke="#87CEEB" stroke-width="1" fill="none" opacity="0.3"/>
-                    
                     <path d="M50 25 C35 25, 25 35, 25 50 C25 65, 35 75, 50 75 M50 25 C65 25, 75 35, 75 50 C75 65, 65 75, 50 75" stroke="#87CEEB" stroke-width="1.5" fill="none" opacity="0.7"/>
-                    
-                    <circle cx="50" cy="50" r="4" fill="#fff">
-                        <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite" />
-                        <animate attributeName="r" values="4;5;4" dur="2s" repeatCount="indefinite" />
-                    </circle>
-                    
-                    <circle cx="35" cy="40" r="1.5" fill="#87CEEB"/>
-                    <circle cx="65" cy="40" r="1.5" fill="#87CEEB"/>
-                    <circle cx="40" cy="65" r="1.5" fill="#87CEEB"/>
-                    <circle cx="60" cy="65" r="1.5" fill="#87CEEB"/>
-                    
+                    <circle cx="50" cy="50" r="4" fill="#fff"><animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite" /></circle>
+                    <circle cx="35" cy="40" r="1.5" fill="#87CEEB"/><circle cx="65" cy="40" r="1.5" fill="#87CEEB"/><circle cx="40" cy="65" r="1.5" fill="#87CEEB"/><circle cx="60" cy="65" r="1.5" fill="#87CEEB"/>
                     <line x1="50" y1="50" x2="35" y2="40" stroke="#87CEEB" stroke-width="0.5" opacity="0.5"/>
                     <line x1="50" y1="50" x2="65" y2="40" stroke="#87CEEB" stroke-width="0.5" opacity="0.5"/>
                     <line x1="50" y1="50" x2="40" y2="65" stroke="#87CEEB" stroke-width="0.5" opacity="0.5"/>
@@ -149,11 +138,11 @@
 
         <div class="right-panel">
             <div class="header">
-                <span>LESIVA ENGINE v3.0</span>
+                <span>LESIVA ENGINE v3.0 | QUANTUM TERMINAL</span>
                 <button class="reset-btn" onclick="resetChat()">Reset</button>
             </div>
             <div id="msgs">
-                <div class="ai">Квантовое ядро LESIVA ENGINE в активной фазе. Масштабирование данных завершено. Я — твоё цифровое расширение. Какая задача сегодня?🌐⚙️</div>
+                <div class="ai" id="first-msg"></div>
             </div>
             <div class="in-box">
                 <div class="input-container">
@@ -171,9 +160,34 @@
         let history = [];
         const box = document.getElementById('msgs'), i = document.getElementById('m'), micBtn = document.getElementById('mic');
 
+        // ТЕКСТ ПРИВЕТСТВИЯ (ТВОЙ ВАРИАНТ)
+        const welcomeText = "Квантовое ядро LESIVA ENGINE в активной фазе. Масштабирование данных завершено. Я — твоё цифровое расширение. Какая задача сегодня? 🌐⚙️";
+
+        const typeWriter = (element, text, speed = 30) => {
+            element.classList.add('typing');
+            let j = 0;
+            element.innerHTML = '';
+            const timer = setInterval(() => {
+                if (j < text.length) {
+                    element.innerHTML += text.charAt(j);
+                    j++;
+                    box.scrollTop = box.scrollHeight;
+                } else {
+                    clearInterval(timer);
+                    element.classList.remove('typing');
+                }
+            }, speed);
+        };
+
+        window.onload = () => {
+            typeWriter(document.getElementById('first-msg'), welcomeText);
+        };
+
         const resetChat = () => {
             history = [];
-            box.innerHTML = '<div class="ai">Память очищена. Я готов к новым задачам.</div>';
+            box.innerHTML = '';
+            const newMsg = document.createElement('div'); newMsg.className = 'ai'; box.appendChild(newMsg);
+            typeWriter(newMsg, "Квантовое ядро перезагружено. Система готова. Какая задача сегодня? ⚙️");
         };
 
         const send = async (text = null) => {
@@ -183,7 +197,7 @@
             const u = document.createElement('div'); u.className = 'user'; u.innerText = val; box.appendChild(u);
             i.value = ''; box.scrollTop = box.scrollHeight;
 
-            const res = document.createElement('div'); res.className = 'ai'; res.innerHTML = '<i>Обработка нейронов...</i>'; box.appendChild(res);
+            const resDiv = document.createElement('div'); resDiv.className = 'ai'; resDiv.innerHTML = '<i>Синхронизация...</i>'; box.appendChild(resDiv);
             box.scrollTop = box.scrollHeight;
 
             try {
@@ -193,11 +207,12 @@
                     body: JSON.stringify({ text: val, history: history }) 
                 });
                 const d = await r.json();
-                res.innerHTML = d.answer;
+                resDiv.innerHTML = '';
+                typeWriter(resDiv, d.answer);
+                
                 history.push({role:'user', content:val}, {role:'assistant', content:d.answer});
                 if(history.length > 10) history = history.slice(-10);
-            } catch(e) { res.innerHTML = 'Брат, похоже связь оборвалась. Проверь интернет.'; }
-            box.scrollTop = box.scrollHeight;
+            } catch(e) { resDiv.innerHTML = 'Ошибка связи с ядром.'; }
         };
 
         document.getElementById('go').onclick = () => send();
