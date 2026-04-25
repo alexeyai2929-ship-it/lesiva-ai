@@ -86,7 +86,21 @@
             border-bottom: 1px solid #1a1a1a;
         }
 
-        .reset-btn { background: transparent; color: #444; border: 1px solid #222; padding: 2px 10px; font-size: 10px; cursor: pointer; }
+        /* КНОПКА RESET В ЦВЕТЕ ТВОЕГО СООБЩЕНИЯ */
+        .reset-btn { 
+            background: #1a1a1a; 
+            color: #fff; 
+            border: 1px solid #333; 
+            padding: 4px 12px; 
+            font-size: 10px; 
+            cursor: pointer; 
+            border-radius: 8px;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+        
+        .reset-btn:hover { opacity: 0.8; background: #222; }
 
         #msgs { 
             flex: 1; padding: 20px; overflow-y: auto; display: flex; 
@@ -160,7 +174,6 @@
         let history = [];
         const box = document.getElementById('msgs'), i = document.getElementById('m'), micBtn = document.getElementById('mic');
 
-        // ТЕКСТ ПРИВЕТСТВИЯ (ТВОЙ ВАРИАНТ)
         const welcomeText = "Квантовое ядро LESIVA ENGINE в активной фазе. Масштабирование данных завершено. Я — твоё цифровое расширение. Какая задача сегодня? 🌐⚙️";
 
         const typeWriter = (element, text, speed = 30) => {
